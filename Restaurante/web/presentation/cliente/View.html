@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Online Order!</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="/Restaurante/css/style.css" rel="stylesheet" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>     
+        <script src="/Restaurante/js/include.js" type="text/javascript"></script>     
+    </head>
+    <body>
+        <div data-include="../header"></div>
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="row">
+                <div class="col-sm-2">
+                    <nav id="sidebar">
+                        <div class="sidebar-header">
+                            <h3>Categories</h3>
+                        </div>
+                        <ul class="list-unstyled components" id="categorias"></ul>
+                    </nav>
+                </div>
+                <!-- Page Content -->
+                <div class="col-sm-6">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ASAP
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">ASAP</a>
+                            <a class="dropdown-item" href="#">Schedule Order</a>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-local">
+                        <div class="panel-body">
+                            <div class="row boxes">
+                                <div class="box-one col-sm-6">
+                                    <dl class="no-spacing">
+                                        <dd><h1 class="h3">TastyIgniter</h1></dd>
+                                        <dd>
+                                            <span class="text-muted">345 Lewisham Road, London SE13 7AB, United Kingdom</span>
+                                        </dd>
+                                    </dl>                    </div>
+                                <div class="box-divider d-block d-sm-none"></div>
+                                <div class="box-two col-sm-6">
+                                    <dl class="no-spacing">
+                                        <dt><span class="text-success">We are open</span></dt>
+
+                                        <dd>
+                                            <span class="fa fa-clock"></span>&nbsp;&nbsp;
+                                            <span>24 hours, 7 days.</span>
+                                        </dd>
+                                        <dd class="text-muted">
+                                            Delivery and pick-up available            </dd>
+                                        <dd class="text-muted">
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="navbar navbar-expand-lg bg-light">
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">   
+                            <ul class="navbar-nav mr-auto" style="cursor: pointer;">                  
+                                <li id="menu" class="nav-link">Menu</li>
+                                <li id="reviews" class="nav-link">Reviews</li>
+                                <li id="info" class="nav-link">Info</li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <div id="accordion">
+
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="btn-group btn-group-toggle w-100 text-center order-type" data-toggle="buttons">
+                        <label
+                            class="btn btn-light active">
+                            <input
+                                type="radio"
+                                name="order_type"
+                                data-cart-toggle="order-type"
+                                value="delivery" checked="checked"                >&nbsp;&nbsp;
+                            <strong>Delivery</strong>
+                            <span
+                                class="small center-block">
+                                in 15 min                                            </span>
+                        </label>
+                        <label
+                            class="btn btn-light ">
+                            <input
+                                type="radio"
+                                name="order_type"
+                                data-cart-toggle="order-type"
+                                value="collection"                 >&nbsp;&nbsp;
+                            <strong>Pick-up</strong>
+                            <span
+                                class="small center-block">
+                                in 15 min                                            </span>
+                        </label>                       
+                    </div>
+                    <div id="cart" class="text-muted text-center mt-5">
+                        <p>Add menu items to your cart</p>
+                    </div>
+                    <div class="checkout">
+                        <button class="btn btn-primary" type="button">Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div data-include="../footer"></div>
+        <script>
+            function loaded() {
+                categorias();
+                subcategorias();
+                $("#sidebar").on("click", "li", function () {
+                    buscar($(this).text());
+                });
+            }
+
+            $(loaded);
+
+            function list(categorias) {
+                var listado = $("#categorias");
+                listado.html("");
+                listado.append("<li>ALL</li>");
+                categorias.forEach((c) => {
+                    row(listado, c);
+                });
+                
+            }
+
+            function row(listado, categoria) {
+                var list = document.createElement("li");
+                list.innerHTML = categoria.nombre;
+                listado.append(list);
+            }
+            function categorias() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/categorias/", contentType: "application/json"})
+                        .then((categorias) => {
+                            list(categorias);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function subcategorias() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/platillos/", contentType: "application/json"})
+                        .then((platillos) => {
+                            listPlatillos(platillos);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function listPlatillos(platillos) {
+                var aux = 1;
+                var listado = $("#accordion");
+                listado.html("");
+                platillos.forEach((platillo) => {
+                    var cont = aux.toString(10);
+                    $('<div>', {
+                    id: 'card',
+                    class: 'card'
+                }).append($('<div>', {
+                    id: "heading"+cont,
+                    class: 'card-header',
+                    html: "<h5 class='mb-0'>" +
+                            "<h5  class='text-dark' data-toggle='collapse' data-target='#collapse"+cont+"' aria-expanded='true' aria-controls='collapse"+cont+"'>" +
+                            platillo.categoria.nombre +
+                            "</h5>" +
+                            "</h5>"
+                }).append($('<div>', {
+                    id: "collapse"+cont,
+                    class: 'collapse show'
+                }).append($('<div>', {
+                    class: 'card-body',
+                    html:   "<dl class='row justify-content-around'>"+
+                            "<dt class='col-sm-3'>" + platillo.nombre+"</dt>" +
+                            "<dt class='col-sm-3'>"+"$"+platillo.precio+"</dt>"+
+                            "<button id='add' class='col-sm-2 btn btn-light btn-sm btn-cart text-white'>+</button>"+
+                            "</dl>"+
+                            "<p class='text-muted'>" + platillo.descripcion + "</p>"
+                                             
+                })))).appendTo('#accordion');
+                aux+=1;
+                listado.find("#add").on("click",()=>{settings(platillo.nombre);});
+                });
+                
+            }
+            function listOpciones(opciones){
+                opciones.forEach((opc) => {
+                    console.log(opc.nombre);
+                });                              
+            }
+            function settings(platillo){
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo, contentType: "application/json"})
+                        .then((opciones) => {
+                            listOpciones(opciones);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function buscar(categoria){
+                categoria = {nombre:categoria};
+                if(categoria.nombre === "ALL"){
+                    subcategorias();
+                    return;
+                }
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/platillos?nombre="+categoria.nombre, contentType: "application/json"})
+                        .then((platillos) => {
+                            listPlatillos(platillos);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }    
+            function errorMessage(status) {
+                switch (status) {
+                    case 404:
+                        return "Registro no encontrado";
+                    case 403:
+                    case 405:
+                        return "Usuario no autorizado";
+                    case 406:
+                        return "Registro duplicado";
+                    default:
+                        return "Error: " + status;
+                }
+            }
+
+        </script>
+    </body>
+</html>
