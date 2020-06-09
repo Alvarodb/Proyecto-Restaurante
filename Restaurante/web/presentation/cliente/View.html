@@ -111,21 +111,30 @@ and open the template in the editor.
                     </div>
                     <div id="cart" class="text-muted text-center mt-5">
                         <p>Add menu items to your cart</p>
+                        <div id="cart-items">
+                            <ul id="items" class="list-unstyled">
+                                
+                            </ul>                           
+                        </div>
                     </div>
                     <div class="checkout">
-                        <button class="btn btn-primary" type="button">Checkout</button>
+                        <button class="btn btn-primary" id="order" type="button">Checkout</button>
                     </div>
                 </div>
             </div>
         </div>
         <div data-include="../footer"></div>
         <script>
+            var cartItems = [];
             function loaded() {
                 categorias();
                 subcategorias();
                 $("#sidebar").on("click", "li", function () {
                     buscar($(this).text());
                 });
+                //$("#order").on("click",function () {
+                //   cart(cartItems);   
+                //});
             }
 
             $(loaded);
@@ -188,25 +197,128 @@ and open the template in the editor.
                     html:   "<dl class='row justify-content-around'>"+
                             "<dt class='col-sm-3'>" + platillo.nombre+"</dt>" +
                             "<dt class='col-sm-3'>"+"$"+platillo.precio+"</dt>"+
-                            "<button id='add' class='col-sm-2 btn btn-light btn-sm btn-cart text-white'>+</button>"+
+                            "<button id='add"+cont+"' type='button' data-toggle='modal' data-target='#modalOpciones' class='col-sm-2 btn btn-light btn-sm btn-cart text-white'>+</button>"+
+                            "<div class='modal' id='modalOpciones' tabindex='-1' role='dialog' aria-labelledby='ModalLabel' aria-hidden='true'>"+
                             "</dl>"+
                             "<p class='text-muted'>" + platillo.descripcion + "</p>"
                                              
                 })))).appendTo('#accordion');
+                listado.find("#add"+cont).on("click",()=>{settings(platillo);});
                 aux+=1;
-                listado.find("#add").on("click",()=>{settings(platillo.nombre);});
                 });
                 
             }
-            function listOpciones(opciones){
+            function listOpciones(opciones,platillo){
+                var listado = $("#modalOpciones");
+                listado.html("");
+                $('<div>', {
+                    class: 'modal-dialog modal-dialog-centered',
+                    id: 'initial',
+                    role: 'document'
+                }).append($('<div>', {
+                    class: 'modal-content',
+                    id: 'content'
+                }).append($('<div>', {
+                    class: 'modal-header',
+                    html: 
+                          "<button type='button' id='close' class='close' data-dismiss='modal' aria-label='Close'"+
+                          "</button>"+
+                          "<span aria-hidden='true'>&times;</span>"                    
+                }))).appendTo('#modalOpciones');  
+                
+                $('#content').append($('<div>', {
+                    class: 'modal-body',
+                    html: "<h4 class='modal-title' id='ModalLabelTitle'>"+platillo.nombre+"</h4>"+   
+                          "<p class='text-muted'><br>"+platillo.descripcion+"</p>"
+                }));
+                
                 opciones.forEach((opc) => {
-                    console.log(opc.nombre);
-                });                              
+                    $('#content').append($('<div>', {
+                        class: 'option',
+                        html: "<h5 id="+opc.nombre+" class='mb-0'>"+opc.nombre+"</h5>"                              
+                    }));     
+                    if(opc.tipo === 'mult'){
+                        opc.adicionalList.forEach((adi) => {
+                            $('#content').append($('<div>', {
+                                class: 'checkbox',
+                                html: "<label><input type='checkbox' id='"+adi.nombre+"'"+" value=''>"+adi.nombre+"   $"+adi.precio+"</label>"                            
+                            }));
+                        });
+                    };
+                });
+                       
+                $('#content').append($('<div>', {
+                    class: 'modal-footer',
+                    html: "<div class='container'>"+
+                            "<div class='row'>"+
+                                "<div class='col'>"+
+                                     "<input type='number' id='cant' name='quantity' class='form-control text-center' value='1'>"+
+                                "</div>"+
+                                "<div class='col'>"+
+                                    "<button type='submit' id='check' class='btn btn-primary btn-block' data-attach-loading=''>ADD</button>"+
+                                "</div>"+
+                           "</div>"+
+                          "</div>"                       
+                }));
+                listado.find("#check").on("click",()=>{cartItemAdd(platillo,opciones,$('#cant').val());});
+            }           
+            function cartItemAdd(platillo,opciones,cant){
+                var opcionesDeseadas = [];
+                $('#modalOpciones').modal('hide');             
+                $('#items').append(
+                        "<li id="+platillo.nombre+">"+
+                        "<button type='button' class='cart-btn text-muted'>-</button>"+
+                        "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
+                        "<span class='name'>"+
+                            "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
+                            platillo.nombre+
+                        "</span>"+
+                        "</li>"
+                );
+
+                opciones.forEach((opc) => {
+                    $('#'+platillo.nombre).append("<h6>"+opc.nombre+"</h6>");
+                    if(opcionesDeseadas.length > 0){
+                        opcionesDeseadas.forEach((d) => {
+                            if(d.nombre !== opc.nombre){
+                                opcionesDeseadas.push(opc);
+                            } 
+                        });
+                    }
+                    else{
+                        opcionesDeseadas.push(opc);
+                    }
+                    opc.adicionalList.forEach((adi) => {
+                        if($('#'+adi.nombre).is(":checked")){
+                            $('#'+platillo.nombre).append(                             
+                                "<span style='float:right;'>"+adi.nombre+"($"+adi.precio+")</span><br><br>"
+                            );
+                        }
+                        else {
+                            var cont = 0;
+                            opcionesDeseadas.forEach((o) => {
+                               o.adicionalList.forEach((a) => {
+                                  if(a.nombre === adi.nombre) {
+                                      o.adicionalList.slice(cont,1);
+                                  }
+                                  cont+=1;
+                               }); 
+                            });
+                            
+                        }
+                    });
+                }); 
+                
+                platilloOrden = {nombre: platillo.nombre,
+                                opcionList: opcionesDeseadas
+                };
+                cartItems.push(platilloOrden);
+                //ir guardando elementos en la sesion
             }
             function settings(platillo){
-                $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo, contentType: "application/json"})
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo.nombre, contentType: "application/json"})
                         .then((opciones) => {
-                            listOpciones(opciones);
+                            listOpciones(opciones,platillo);
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
