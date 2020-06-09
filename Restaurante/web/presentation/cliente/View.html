@@ -129,6 +129,7 @@ and open the template in the editor.
             function loaded() {
                 categorias();
                 subcategorias();
+                renderCart();
                 $("#sidebar").on("click", "li", function () {
                     buscar($(this).text());
                 });
@@ -281,12 +282,12 @@ and open the template in the editor.
                     if(opcionesDeseadas.length > 0){
                         opcionesDeseadas.forEach((d) => {
                             if(d.nombre !== opc.nombre){
-                                opcionesDeseadas.push(opc);
+                                opcionesDeseadas.push(JSON.parse(JSON.stringify(opc)));
                             } 
                         });
                     }
                     else{
-                        opcionesDeseadas.push(opc);
+                        opcionesDeseadas.push(JSON.parse(JSON.stringify(opc)));
                     }
                     opc.adicionalList.forEach((adi) => {
                         if($('#'+adi.nombre).is(":checked")){
@@ -299,7 +300,7 @@ and open the template in the editor.
                             opcionesDeseadas.forEach((o) => {
                                o.adicionalList.forEach((a) => {
                                   if(a.nombre === adi.nombre) {
-                                      o.adicionalList.slice(cont,1);
+                                      o.adicionalList.splice(cont,1);                                  
                                   }
                                   cont+=1;
                                }); 
@@ -308,13 +309,60 @@ and open the template in the editor.
                         }
                     });
                 }); 
-                
-                platilloOrden = {nombre: platillo.nombre,
-                                opcionList: opcionesDeseadas
-                };
-                cartItems.push(platilloOrden);
                 //ir guardando elementos en la sesion
+                platilloOrden = {nombre: platillo.nombre,
+                                opcionList: opcionesDeseadas,
+                                precio: platillo.precio
+                };
+                detalleOrden = { platillo: platilloOrden,
+                                 cantidad: cant  
+                };               
+                cartItems.push(detalleOrden);
+                cart(detalleOrden);
             }
+            function cart(detalleOrden){ 
+                $.ajax({type: "PUT", url: "/Restaurante/restaurante/cart", data: JSON.stringify(detalleOrden),contentType: "application/json"})
+                        .then(() => {
+                            //no hace nada por ahora, solo actualiza el carrito en la sesion
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function renderCart(){
+                //trae el carrito de la sesion y lo renderiza en la pagina
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/cart", contentType: "application/json"})
+                        .then((items) => {
+                            items.forEach((item) => {
+                                cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);
+                            });
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function cartItemRender(platillo,opciones, cant){           
+                $('#items').append(
+                        "<li id="+platillo.nombre+">"+
+                        "<button type='button' class='cart-btn text-muted'>-</button>"+
+                        "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
+                        "<span class='name'>"+
+                            "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
+                            platillo.nombre+
+                        "</span>"+
+                        "</li>"
+                );
+
+                opciones.forEach((opc) => {
+                    $('#'+platillo.nombre).append("<h6>"+opc.nombre+"</h6>");                   
+                    opc.adicionalList.forEach((adi) => {
+                            $('#'+platillo.nombre).append(                             
+                                "<span style='float:right;'>"+adi.nombre+"($"+adi.precio+")</span><br><br>"
+                            );
+                    });
+                });
+            }
+            
             function settings(platillo){
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo.nombre, contentType: "application/json"})
                         .then((opciones) => {
