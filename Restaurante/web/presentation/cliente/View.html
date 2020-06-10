@@ -268,14 +268,14 @@ and open the template in the editor.
                 $('#modalOpciones').modal('hide');             
                 $('#items').append(
                         "<li id="+platillo.nombre+">"+
-                        "<button type='button' class='cart-btn text-muted'>-</button>"+
+                        "<button type='button' id='del' class='cart-btn text-muted'>-</button>"+
                         "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
                         "<span class='name'>"+
                             "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
                             platillo.nombre+
                         "</span>"+
                         "</li>"
-                );
+                );                
 
                 opciones.forEach((opc) => {
                     $('#'+platillo.nombre).append("<h6>"+opc.nombre+"</h6>");
@@ -317,8 +317,9 @@ and open the template in the editor.
                 detalleOrden = { platillo: platilloOrden,
                                  cantidad: cant  
                 };               
-                cartItems.push(detalleOrden);
+                cartItems.push(detalleOrden); //creo opcional
                 cart(detalleOrden);
+                $("#"+platillo.nombre).find("#del").on("click",()=>{cartItemDel(platillo.nombre);});
             }
             function cart(detalleOrden){ 
                 $.ajax({type: "PUT", url: "/Restaurante/restaurante/cart", data: JSON.stringify(detalleOrden),contentType: "application/json"})
@@ -341,10 +342,10 @@ and open the template in the editor.
                             alert(errorMessage(error.status));
                         });
             }
-            function cartItemRender(platillo,opciones, cant){           
+            function cartItemRender(platillo,opciones, cant){                 
                 $('#items').append(
                         "<li id="+platillo.nombre+">"+
-                        "<button type='button' class='cart-btn text-muted'>-</button>"+
+                        "<button type='button' id='del' class='cart-btn text-muted'>-</button>"+
                         "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
                         "<span class='name'>"+
                             "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
@@ -352,7 +353,9 @@ and open the template in the editor.
                         "</span>"+
                         "</li>"
                 );
-
+                $("#"+platillo.nombre).find("#del").on("click",()=>{cartItemDel(platillo.nombre);});
+          
+                
                 opciones.forEach((opc) => {
                     $('#'+platillo.nombre).append("<h6>"+opc.nombre+"</h6>");                   
                     opc.adicionalList.forEach((adi) => {
@@ -362,7 +365,24 @@ and open the template in the editor.
                     });
                 });
             }
-            
+            function cartItemDel(nombre){
+                platillo = {nombre:nombre};
+                $.ajax({type: "DELETE", url: "/Restaurante/restaurante/cart/"+platillo.nombre, contentType: "application/json"})
+                        .then((items) => {
+                            if(items.length > 0){
+                                $('#items').html("");
+                                items.forEach((item) => {
+                                    cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);
+                                });
+                            }
+                            else{
+                                $('#items').html("");
+                            }
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
             function settings(platillo){
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo.nombre, contentType: "application/json"})
                         .then((opciones) => {

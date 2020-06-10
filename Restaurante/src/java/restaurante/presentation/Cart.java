@@ -34,13 +34,13 @@ public class Cart {
     public List<Detalle> listItems() { 
         HttpSession session = request.getSession(true);
         List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
-        if(result == null){          
-            session.setAttribute("cart", new ArrayList<Detalle>());
+        if(result == null){         
+            result = new ArrayList<Detalle>();
+            session.setAttribute("cart", result);
         }
         return result;
-    } 
+    }  
     
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     public void addItem(Detalle d) {  
@@ -52,4 +52,19 @@ public class Cart {
             throw new NotFoundException(); 
         }
     }
+    
+    @DELETE
+    @Path("{nombre}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Detalle> deleteItem(@PathParam("nombre") String nombre) {
+        try {
+            HttpSession session = request.getSession(true);
+            List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
+            result.removeIf(i -> i.getPlatillo().getNombre().equals(nombre));
+            return result;
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    }
+    
 }
