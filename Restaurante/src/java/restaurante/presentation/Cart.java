@@ -45,7 +45,7 @@ public class Cart {
     
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public float addItem(Detalle d) {  
+    public void addItem(Detalle d) {  
         try {
            HttpSession session = request.getSession(true);
            List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
@@ -54,7 +54,6 @@ public class Cart {
            float nuevoTotal = (float) session.getAttribute("total") + d.getPlatillo().getPrecio();
            session.setAttribute("total", nuevoTotal);
            
-           return nuevoTotal;
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
@@ -67,15 +66,19 @@ public class Cart {
         try {
             HttpSession session = request.getSession(true);
             List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
-
+            float nuevoTotal = (float) session.getAttribute("total");
+            float precioArt;
+            
             for(Iterator<Detalle> iterator = result.iterator(); iterator.hasNext();){
                 Detalle d = iterator.next();
-                if(d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() > 1){
+                if(d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() > 1){ 
+                    precioArt = d.getPlatillo().getPrecio()/d.getCantidad();
                     d.setCantidad(d.getCantidad() - 1);
+                    d.getPlatillo().setPrecio(precioArt * d.getCantidad());
+                    session.setAttribute("total", nuevoTotal - precioArt);  
                 }
                 else if(d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() <= 1){
-                    float nuevoTotal = (float) session.getAttribute("total");
-                    session.setAttribute("total", nuevoTotal - d.getPlatillo().getPrecio());
+                    session.setAttribute("total", nuevoTotal - (d.getPlatillo().getPrecio()));                   
                     iterator.remove();
                 }
             }

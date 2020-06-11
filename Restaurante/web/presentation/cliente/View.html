@@ -126,8 +126,7 @@ and open the template in the editor.
         </div>
         <div data-include="../footer"></div>
         <script>
-            var cartItems = [];
-            var total = 0;
+            //var total = 0;
             function loaded() {
                 categorias();
                 subcategorias();
@@ -208,8 +207,7 @@ and open the template in the editor.
                 })))).appendTo('#accordion');
                 listado.find("#add"+cont).on("click",()=>{settings(platillo);});
                 aux+=1;
-                });
-                
+                });           
             }
             function listOpciones(opciones,platillo){
                 var listado = $("#modalOpciones");
@@ -266,6 +264,7 @@ and open the template in the editor.
                 listado.find("#check").on("click",()=>{cartItemAdd(platillo,opciones,$('#cant').val());});
             }           
             function cartItemAdd(platillo,opciones,cant){
+                var total = 0;
                 var extras = 0;
                 var opcionesDeseadas = [];
                 $('#modalOpciones').modal('hide');             
@@ -314,7 +313,7 @@ and open the template in the editor.
                         }
                     });
                 }); 
-                $("#precio").text("$" + (platillo.precio + extras) * cant);
+                $("#"+platillo.nombre).find("#precio").text("$" + (platillo.precio + extras) * cant);
                 total = total + ((platillo.precio + extras) * cant);
                 //ir guardando elementos en la sesion
                 platilloOrden = {nombre: platillo.nombre,
@@ -324,16 +323,15 @@ and open the template in the editor.
                 detalleOrden = { platillo: platilloOrden,
                                  cantidad: cant  
                 };               
-                cartItems.push(detalleOrden); //creo opcional
-                cart(detalleOrden,total);
+
+                cart(detalleOrden);
                 $("#"+platillo.nombre).find("#del").on("click",()=>{cartItemDel(platillo.nombre);});
             }
-            function cart(detalleOrden,total){ 
+            function cart(detalleOrden){ 
                 $.ajax({type: "PUT", url: "/Restaurante/restaurante/cart", data: JSON.stringify(detalleOrden),contentType: "application/json"})
-                        .then((num) => {
+                        .then(( ) => {
                             //no hace nada por ahora, solo actualiza el carrito en la sesion
-                             total = num;
-                             $("#total").text("Order Total: $"+total);
+                             totalCart();
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
@@ -388,9 +386,9 @@ and open the template in the editor.
             function cartItemDel(nombre){
                 platillo = {nombre:nombre};
                 $.ajax({type: "DELETE", url: "/Restaurante/restaurante/cart/"+platillo.nombre, contentType: "application/json"})
-                        .then((items) => {
-                            totalCart();
-                            if(items.length > 0){                               
+                        .then((items) => {  
+                             totalCart();
+                            if(items.length > 0){                                
                                 $('#items').html("");
                                 items.forEach((item) => {
                                     cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);
