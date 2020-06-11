@@ -85,4 +85,11 @@ public class Cart {
             throw new NotFoundException(); 
         }
     }  
+        
+    @POST
+    public float total() {  
+        HttpSession session = request.getSession(true);
+        float nuevoTotal = (float) session.getAttribute("total");           
+        return nuevoTotal;
+    }
 }

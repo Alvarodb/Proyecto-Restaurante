@@ -338,19 +338,29 @@ and open the template in the editor.
                                 (error) => {
                             alert(errorMessage(error.status));
                         });
-                $
             }
             function renderCart(){
                 //trae el carrito de la sesion y lo renderiza en la pagina
                 $.ajax({type: "GET", url: "/Restaurante/restaurante/cart", contentType: "application/json"})
                         .then((items) => {
+                            totalCart();
                             items.forEach((item) => {
-                                cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);
+                                cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);                     
                             });
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
-                        });
+                        });                   
+            }
+            function totalCart(){
+                   $.ajax({type: "POST", url: "/Restaurante/restaurante/cart"})
+                        .then((num) => {
+                            total = num;
+                            $("#total").text("Order Total: $"+total);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });   
             }
             function cartItemRender(platillo,opciones, cant){                 
                 $('#items').append(
@@ -379,7 +389,8 @@ and open the template in the editor.
                 platillo = {nombre:nombre};
                 $.ajax({type: "DELETE", url: "/Restaurante/restaurante/cart/"+platillo.nombre, contentType: "application/json"})
                         .then((items) => {
-                            if(items.length > 0){
+                            totalCart();
+                            if(items.length > 0){                               
                                 $('#items').html("");
                                 items.forEach((item) => {
                                     cartItemRender(item.platillo,item.platillo.opcionList,item.cantidad);
@@ -391,7 +402,7 @@ and open the template in the editor.
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
-                        });
+                        });              
             }
             function settings(platillo){
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/opciones?nombre="+platillo.nombre, contentType: "application/json"})
