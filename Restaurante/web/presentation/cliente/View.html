@@ -117,7 +117,8 @@ and open the template in the editor.
                             </ul>                           
                         </div>
                     </div>
-                    <div class="checkout">
+                    <div class="checkout">   
+                        <p class="text-muted" id="total"></p>
                         <button class="btn btn-primary" id="order" type="button">Checkout</button>
                     </div>
                 </div>
@@ -126,6 +127,7 @@ and open the template in the editor.
         <div data-include="../footer"></div>
         <script>
             var cartItems = [];
+            var total = 0;
             function loaded() {
                 categorias();
                 subcategorias();
@@ -264,12 +266,13 @@ and open the template in the editor.
                 listado.find("#check").on("click",()=>{cartItemAdd(platillo,opciones,$('#cant').val());});
             }           
             function cartItemAdd(platillo,opciones,cant){
+                var extras = 0;
                 var opcionesDeseadas = [];
                 $('#modalOpciones').modal('hide');             
                 $('#items').append(
                         "<li id="+platillo.nombre+">"+
                         "<button type='button' id='del' class='cart-btn text-muted'>-</button>"+
-                        "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
+                        "<span class='price pull-right' id='precio'></span>"+
                         "<span class='name'>"+
                             "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
                             platillo.nombre+
@@ -291,8 +294,10 @@ and open the template in the editor.
                     }
                     opc.adicionalList.forEach((adi) => {
                         if($('#'+adi.nombre).is(":checked")){
+                             extras = extras + adi.precio;
                             $('#'+platillo.nombre).append(                             
                                 "<span style='float:right;'>"+adi.nombre+"($"+adi.precio+")</span><br><br>"
+                               
                             );
                         }
                         else {
@@ -309,26 +314,31 @@ and open the template in the editor.
                         }
                     });
                 }); 
+                $("#precio").text("$" + (platillo.precio + extras) * cant);
+                total = total + ((platillo.precio + extras) * cant);
                 //ir guardando elementos en la sesion
                 platilloOrden = {nombre: platillo.nombre,
                                 opcionList: opcionesDeseadas,
-                                precio: platillo.precio
+                                precio: (platillo.precio + extras) * cant
                 };
                 detalleOrden = { platillo: platilloOrden,
                                  cantidad: cant  
                 };               
                 cartItems.push(detalleOrden); //creo opcional
-                cart(detalleOrden);
+                cart(detalleOrden,total);
                 $("#"+platillo.nombre).find("#del").on("click",()=>{cartItemDel(platillo.nombre);});
             }
-            function cart(detalleOrden){ 
+            function cart(detalleOrden,total){ 
                 $.ajax({type: "PUT", url: "/Restaurante/restaurante/cart", data: JSON.stringify(detalleOrden),contentType: "application/json"})
-                        .then(() => {
+                        .then((num) => {
                             //no hace nada por ahora, solo actualiza el carrito en la sesion
+                             total = num;
+                             $("#total").text("Order Total: $"+total);
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
                         });
+                $
             }
             function renderCart(){
                 //trae el carrito de la sesion y lo renderiza en la pagina
@@ -346,7 +356,7 @@ and open the template in the editor.
                 $('#items').append(
                         "<li id="+platillo.nombre+">"+
                         "<button type='button' id='del' class='cart-btn text-muted'>-</button>"+
-                        "<span class='price pull-right'>$"+cant * platillo.precio+"</span>"+
+                        "<span class='price pull-right'>$"+platillo.precio+"</span>"+
                         "<span class='name'>"+
                             "<span class='quantity font-weight-bold'>"+cant+"×"+"</span>"+
                             platillo.nombre+

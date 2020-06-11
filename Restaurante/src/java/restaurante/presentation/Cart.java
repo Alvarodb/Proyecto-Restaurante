@@ -6,6 +6,7 @@
 package restaurante.presentation;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,17 +38,23 @@ public class Cart {
         if(result == null){         
             result = new ArrayList<Detalle>();
             session.setAttribute("cart", result);
+            session.setAttribute("total", 0.0f);
         }
         return result;
     }  
     
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addItem(Detalle d) {  
+    public float addItem(Detalle d) {  
         try {
            HttpSession session = request.getSession(true);
            List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
            result.add(d);
+            
+           float nuevoTotal = (float) session.getAttribute("total") + d.getPlatillo().getPrecio();
+           session.setAttribute("total", nuevoTotal);
+           
+           return nuevoTotal;
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
@@ -60,11 +67,22 @@ public class Cart {
         try {
             HttpSession session = request.getSession(true);
             List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
-            result.removeIf(i -> i.getPlatillo().getNombre().equals(nombre));
+
+            for(Iterator<Detalle> iterator = result.iterator(); iterator.hasNext();){
+                Detalle d = iterator.next();
+                if(d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() > 1){
+                    d.setCantidad(d.getCantidad() - 1);
+                }
+                else if(d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() <= 1){
+                    float nuevoTotal = (float) session.getAttribute("total");
+                    session.setAttribute("total", nuevoTotal - d.getPlatillo().getPrecio());
+                    iterator.remove();
+                }
+            }
+            
             return result;
         } catch (Exception ex) {
             throw new NotFoundException(); 
         }
-    }
-    
+    }  
 }
