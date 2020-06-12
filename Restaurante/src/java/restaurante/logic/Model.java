@@ -9,6 +9,7 @@ import java.util.List;
 import restaurante.data.daoCategorias;
 import restaurante.data.daoOpcion;
 import restaurante.data.daoPlatillos;
+import restaurante.data.daoUsuario;
 
 /**
  *
@@ -19,11 +20,13 @@ public class Model {
     daoCategorias categorias;
     daoPlatillos platillos;
     daoOpcion opciones;
+    daoUsuario usuarios;
     
     public Model(){
         categorias = new daoCategorias();
         platillos = new daoPlatillos();
         opciones = new daoOpcion();
+        usuarios = new daoUsuario();
     }
     //categorias
      public List<Categoria> buscarCategorias(){ 
@@ -47,6 +50,17 @@ public class Model {
         List<Opcion> result = opciones.opcionesSearch(nombre);
         return result;
     }
+    
+    //usuarios
+    
+    
+    //consultar usuario
+   public Usuario buscarUsuario(String email, String clave) throws Exception{
+        Usuario result = usuarios.usuarioSearch(email,clave);
+        return result;
+    }
+    
+    
     
     static Model the_instance;
     public static Model instance(){

@@ -52,7 +52,7 @@ public class Usuario implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "nombre")
-    private short nombre;
+    private String nombre;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -85,7 +85,7 @@ public class Usuario implements Serializable {
         this.nombreUsuario = nombreUsuario;
     }
 
-    public Usuario(String nombreUsuario, String clave, short nombre, String apellidos, String email, short administrador, String telefono) {
+    public Usuario(String nombreUsuario, String clave, String nombre, String apellidos, String email, short administrador, String telefono) {
         this.nombreUsuario = nombreUsuario;
         this.clave = clave;
         this.nombre = nombre;
@@ -111,11 +111,11 @@ public class Usuario implements Serializable {
         this.clave = clave;
     }
 
-    public short getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(short nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
