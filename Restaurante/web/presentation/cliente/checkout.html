@@ -26,7 +26,11 @@ and open the template in the editor.
             }
             $(loaded);
             function ordenar() {
-                $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenes"})
+                orden = {
+                    //tipo:
+                    metodo_pago: $("#dir").val()
+                };
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenes", data: JSON.strintify(orden),contentType: "application/json"})
                         .then(() => {
                             //orden registrada
                         },
@@ -48,7 +52,7 @@ and open the template in the editor.
             function renderConfirmation(usuario) {
                 if (!usuario) {
                     $("#content").append("Already have an account to place your order?" +
-                            "<a href='/Restaurante/presentation/cliente/login.html'>Login</a>OR" +
+                            "<a href='/Restaurante/presentation/cliente/login.html'>Login</a> else " +
                             "<a href='/Restaurante/presentation/cliente/register.html'>Register</a>"
                             );
                 } else {
@@ -66,21 +70,24 @@ and open the template in the editor.
                             "<label><input type='radio' name='optradio'>Credit or debit card upon delivery</label>" +
                             "</div>" +
                             "</div>" +
-                            "<div id='direcciones'>"+
+                            "<div id='direcciones'>" +
                             "<h6 class='card-subtitle mb-2 text-muted'>Select your address:</h6>" +
-                            "</div>"+
+                            "</div>" +
                             "<button class='btn btn-primary' id='order' type='button'>Checkout</button>" +
                             "</form>" +
                             "</div>" +
                             "</div>"
                             );
+                    $("#order").on("click", function () {
+                        ordenar();
+                    });
                 }
             }
             function direcciones(usuario) {
                 if (usuario) {
                     usuario.direccionList.forEach((dir) => {
                         $("#direcciones").append(
-                                "<input type='text' class='form-control' list='select-list-id'/>" +
+                                "<input type='text' id='dir' class='form-control' list='select-list-id'/>" +
                                 "<datalist id='select-list-id'>" +
                                 "<option value='" + dir.address1 + "," + dir.city + "'></option>" +
                                 "</datalist>"
@@ -88,7 +95,6 @@ and open the template in the editor.
                     });
                 }
             }
-
             function errorMessage(status) {
                 switch (status) {
                     case 404:
