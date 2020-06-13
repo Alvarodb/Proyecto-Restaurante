@@ -19,53 +19,13 @@ and open the template in the editor.
     </head>
     <body>
         <div data-include="../header"></div>
-
-
-        <div class="container">
-            <div class="row">
-                <div class="col-sm">
-                    <form>
-
-                        <div class="form-group">
-                            <label for="InputFirstName">First Name</label>
-                            <input type="text" class="form-control" id="InputFirstName">
-                        </div>
-                        <div class="form-group">
-                            <label for="InputLastName">Last Name</label>
-                            <input type="text" class="form-control" id="InputLastName">
-                        </div>
-                        <div class="form-group">
-                            <label for="InputEmail">Email</label>
-                            <input type="email" class="form-control" id="InputEmail" aria-describedby="emailHelp">
-                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="InputTelephone">Telephone</label>
-                            <input type="text" class="form-control" id="InputTelephone">
-                        </div>
-                        <div class="form-group">
-                            <div class="radio">
-                                <label><input type="radio" name="optradio">Cash On Delivery</label>
-                            </div>
-                            <div class="radio">
-                                <label><input type="radio" name="optradio">Credit or debit card upon delivery</label>
-                            </div>
-                        </div>
-                          <button class="btn btn-primary" id="order" type="button">Checkout</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div data-include="../footer">
-        </div>
-
-
+        <div id="content"></div>
+        <div data-include="../footer"></div>
         <script>
+            var usuario;
             function loaded() {
-                $("#order").on("click", function () {
-                    ordenar();
-                });
+                direcciones();
+                logged();
             }
             $(loaded);
             function ordenar() {
@@ -77,6 +37,50 @@ and open the template in the editor.
                             alert(errorMessage(error.status));
                         });
             }
+            function logged() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/login/", contentType: "application/json"})
+                        .then((user) => {
+                            renderConfirmation(user);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+
+            }
+            function renderConfirmation(usuario) {
+                if (!usuario) {
+                    $("#content").append("Already have an account to place your order?" +
+                            "<a href='/Restaurante/presentation/cliente/login.html'>Login</a>OR" +
+                            "<a href='/Restaurante/presentation/cliente/register.html'>Register</a>"
+                            );
+                } else {
+                    $("#content").append(
+                            "<div class='card'>" +
+                            "<div class='card-header'>Order set up</div>" +
+                            "<div class='card-body'>" +
+                            "<h5>Welcome back," + usuario.nombre + "</h5>" +
+                            "<h6 class='card-subtitle mb-2 text-muted'>Select your order options:</h6>" +
+                            "<form><div class='form-group'>" +
+                            "<div class='radio'>" +
+                            "<label><input type='radio' name='optradio'>Cash On Delivery</label>" +
+                            "</div>" +
+                            "<div class='radio'>" +
+                            "<label><input type='radio' name='optradio'>Credit or debit card upon delivery</label>" +
+                            "</div>" +
+                            "</div>" +
+                            "<button class='btn btn-primary' id='order' type='button'>Checkout</button>" +
+                            "</form>" +
+                            "</div>" +
+                            "</div>"
+                            );
+                }
+            }
+            function direcciones(){
+               
+                
+                
+            }
+
             function errorMessage(status) {
                 switch (status) {
                     case 404:

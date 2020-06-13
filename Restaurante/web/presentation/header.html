@@ -3,12 +3,69 @@
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">   
             <img src="/Restaurante/images/logo.svg">
-            <ul class="navbar-nav ml-auto" style="cursor: pointer;">                  
-                <li id="menu" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/View.html';">View Menu</li>
-                <li id="login" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/login.html';">Login</li>
-                <li id="register" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/register.html';">Register</li>
+            <ul class="navbar-nav ml-auto" id="options" style="cursor: pointer;">                  
+                <li id="menu" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/View.html';">View Menu</li>               
                 <li id="admin" class="nav-link">Administrador</li>
             </ul>
         </div>
     </nav>
 </header>
+
+
+<script>
+    var usuario;
+    function loaded() {
+        logged();
+    }
+    $(loaded);
+
+    function logged() {
+        $.ajax({type: "GET", url: "/Restaurante/restaurante/login/", contentType: "application/json"})
+                .then((user) => {
+                    render(user);
+                },
+                        (error) => {
+                    alert(errorMessage(error.status));
+                });
+
+    }
+    function logout(){
+         $.ajax({type: "DELETE", url: "/Restaurante/restaurante/login/", contentType: "application/json"})
+                .then(() => {
+                    window.location.replace("/Restaurante/presentation/cliente/View.html");
+                },
+                        (error) => {
+                    alert(errorMessage(error.status));
+                });
+    }
+    function render(user){
+        if(!user){
+            $("#options").append("<li id='login' class='nav-link'>Login</li>"+
+                "<li id='register' class='nav-link'>Register</li>");
+
+             $("#register").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/register.html");});
+             $("#login").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/login.html");});
+        }
+        else{
+            $("#options").append("<li id='login' class='nav-link'>My Account</li>");
+            $("#options").append("<li id='logout' class='nav-link'>Logout</li>");
+            $("#login").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/login.html");});
+            $("#logout").on('click',function(){logout();});
+        }
+        
+    }
+    function errorMessage(status) {
+        switch (status) {
+            case 404:
+                return "Registro no encontrado";
+            case 403:
+            case 405:
+                return "Usuario no autorizado";
+            case 406:
+                return "Registro duplicado";
+            default:
+                return "Error: " + status;
+        }
+    }
+
+</script>

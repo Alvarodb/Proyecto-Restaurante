@@ -42,5 +42,20 @@ public class Usuarios {
         session.setAttribute("usuario", user);     
         return user;
     } 
+    
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})  
+    public Usuario recuperarUsuario() { 
+        HttpSession session = request.getSession(true);
+        return (Usuario) session.getAttribute("usuario");
+    } 
+    @DELETE
+    public void logout() { 
+        HttpSession session = request.getSession(true);
+        session.removeAttribute("usuario");
+        session.invalidate();
+    } 
+    
+    
 }
 
