@@ -27,10 +27,11 @@ and open the template in the editor.
             $(loaded);
             function ordenar() {
                 orden = {
-                    //tipo:
-                    metodo_pago: $("#dir").val()
+                    tipo: 'ASAP',
+                    metodo_pago:  $("input[name='optradio']:checked"),
+                    estado: 'Pendiente'
                 };
-                $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenes", data: JSON.strintify(orden),contentType: "application/json"})
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenar", data: JSON.stringify(orden),contentType: "application/json"})
                         .then(() => {
                             //orden registrada
                         },
