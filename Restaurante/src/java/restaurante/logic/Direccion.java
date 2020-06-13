@@ -9,11 +9,13 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -25,23 +27,15 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "direccion")
 @NamedQueries({
-    @NamedQuery(name = "Direccion.findAll", query = "SELECT d FROM Direccion d")
-    , @NamedQuery(name = "Direccion.findByUsuario", query = "SELECT d FROM Direccion d WHERE d.usuario = :usuario")
-    , @NamedQuery(name = "Direccion.findByAddress1", query = "SELECT d FROM Direccion d WHERE d.address1 = :address1")
-    , @NamedQuery(name = "Direccion.findByAddress2", query = "SELECT d FROM Direccion d WHERE d.address2 = :address2")
-    , @NamedQuery(name = "Direccion.findByCity", query = "SELECT d FROM Direccion d WHERE d.city = :city")
-    , @NamedQuery(name = "Direccion.findByState", query = "SELECT d FROM Direccion d WHERE d.state = :state")
-    , @NamedQuery(name = "Direccion.findByPostcode", query = "SELECT d FROM Direccion d WHERE d.postcode = :postcode")
-    , @NamedQuery(name = "Direccion.findByCountry", query = "SELECT d FROM Direccion d WHERE d.country = :country")})
+    @NamedQuery(name = "Direccion.findAll", query = "SELECT d FROM Direccion d")})
 public class Direccion implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
-    @Column(name = "Usuario")
-    private String usuario;
+    @Column(name = "id")
+    private Integer id;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
@@ -72,19 +66,19 @@ public class Direccion implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "country")
     private String country;
-    @JoinColumn(name = "Usuario", referencedColumnName = "nombre_usuario", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Usuario usuario1;
+    @JoinColumn(name = "Usuario", referencedColumnName = "nombre_usuario")
+    @ManyToOne(optional = false)
+    private Usuario usuario;
 
     public Direccion() {
     }
 
-    public Direccion(String usuario) {
-        this.usuario = usuario;
+    public Direccion(Integer id) {
+        this.id = id;
     }
 
-    public Direccion(String usuario, String address1, String address2, String city, String state, String postcode, String country) {
-        this.usuario = usuario;
+    public Direccion(Integer id, String address1, String address2, String city, String state, String postcode, String country) {
+        this.id = id;
         this.address1 = address1;
         this.address2 = address2;
         this.city = city;
@@ -93,12 +87,12 @@ public class Direccion implements Serializable {
         this.country = country;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getAddress1() {
@@ -149,18 +143,18 @@ public class Direccion implements Serializable {
         this.country = country;
     }
 
-    public Usuario getUsuario1() {
-        return usuario1;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuario1(Usuario usuario1) {
-        this.usuario1 = usuario1;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (usuario != null ? usuario.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -171,7 +165,7 @@ public class Direccion implements Serializable {
             return false;
         }
         Direccion other = (Direccion) object;
-        if ((this.usuario == null && other.usuario != null) || (this.usuario != null && !this.usuario.equals(other.usuario))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -179,7 +173,7 @@ public class Direccion implements Serializable {
 
     @Override
     public String toString() {
-        return "restaurante.logic.Direccion[ usuario=" + usuario + " ]";
+        return "restaurante.logic.Direccion[ id=" + id + " ]";
     }
     
 }

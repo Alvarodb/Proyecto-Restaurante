@@ -14,17 +14,14 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>     
-        <script src="/Restaurante/js/include.js" type="text/javascript"></script>    
-        <script src="/Restaurante/js/checkout.js" type="text/javascript"></script>     
+        <script src="/Restaurante/js/include.js" type="text/javascript"></script>       
     </head>
     <body>
         <div data-include="../header"></div>
         <div id="content"></div>
         <div data-include="../footer"></div>
         <script>
-            var usuario;
             function loaded() {
-                direcciones();
                 logged();
             }
             $(loaded);
@@ -41,6 +38,7 @@ and open the template in the editor.
                 $.ajax({type: "GET", url: "/Restaurante/restaurante/login/", contentType: "application/json"})
                         .then((user) => {
                             renderConfirmation(user);
+                            direcciones(user);
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
@@ -68,6 +66,9 @@ and open the template in the editor.
                             "<label><input type='radio' name='optradio'>Credit or debit card upon delivery</label>" +
                             "</div>" +
                             "</div>" +
+                            "<div id='direcciones'>"+
+                            "<h6 class='card-subtitle mb-2 text-muted'>Select your address:</h6>" +
+                            "</div>"+
                             "<button class='btn btn-primary' id='order' type='button'>Checkout</button>" +
                             "</form>" +
                             "</div>" +
@@ -75,10 +76,17 @@ and open the template in the editor.
                             );
                 }
             }
-            function direcciones(){
-               
-                
-                
+            function direcciones(usuario) {
+                if (usuario) {
+                    usuario.direccionList.forEach((dir) => {
+                        $("#direcciones").append(
+                                "<input type='text' class='form-control' list='select-list-id'/>" +
+                                "<datalist id='select-list-id'>" +
+                                "<option value='" + dir.address1 + "," + dir.city + "'></option>" +
+                                "</datalist>"
+                                );
+                    });
+                }
             }
 
             function errorMessage(status) {

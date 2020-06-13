@@ -23,7 +23,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -33,15 +32,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "orden")
 @NamedQueries({
-    @NamedQuery(name = "Orden.findAll", query = "SELECT o FROM Orden o")
-    , @NamedQuery(name = "Orden.findById", query = "SELECT o FROM Orden o WHERE o.id = :id")
-    , @NamedQuery(name = "Orden.findByTipo", query = "SELECT o FROM Orden o WHERE o.tipo = :tipo")
-    , @NamedQuery(name = "Orden.findByFechahora", query = "SELECT o FROM Orden o WHERE o.fechahora = :fechahora")
-    , @NamedQuery(name = "Orden.findByFechahoraentrega", query = "SELECT o FROM Orden o WHERE o.fechahoraentrega = :fechahoraentrega")
-    , @NamedQuery(name = "Orden.findByEstado", query = "SELECT o FROM Orden o WHERE o.estado = :estado")
-    , @NamedQuery(name = "Orden.findByMetodoPago", query = "SELECT o FROM Orden o WHERE o.metodoPago = :metodoPago")
-    , @NamedQuery(name = "Orden.findByTotal", query = "SELECT o FROM Orden o WHERE o.total = :total")
-    , @NamedQuery(name = "Orden.findByDireccion", query = "SELECT o FROM Orden o WHERE o.direccion = :direccion")})
+    @NamedQuery(name = "Orden.findAll", query = "SELECT o FROM Orden o")})
 public class Orden implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -50,42 +41,29 @@ public class Orden implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "tipo")
     private String tipo;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "fechahora")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechahora;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "fechahoraentrega")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechahoraentrega;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "estado")
     private String estado;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "metodo_pago")
     private String metodoPago;
-    @Basic(optional = false)
-    @NotNull
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "total")
-    private float total;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    private Float total;
+    @Size(max = 45)
     @Column(name = "direccion")
     private String direccion;
     @JoinColumn(name = "usuario", referencedColumnName = "nombre_usuario")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private Usuario usuario;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orden")
     private List<Detalle> detalleList;
@@ -95,17 +73,6 @@ public class Orden implements Serializable {
 
     public Orden(Integer id) {
         this.id = id;
-    }
-
-    public Orden(Integer id, String tipo, Date fechahora, Date fechahoraentrega, String estado, String metodoPago, float total, String direccion) {
-        this.id = id;
-        this.tipo = tipo;
-        this.fechahora = fechahora;
-        this.fechahoraentrega = fechahoraentrega;
-        this.estado = estado;
-        this.metodoPago = metodoPago;
-        this.total = total;
-        this.direccion = direccion;
     }
 
     public Integer getId() {
@@ -156,11 +123,11 @@ public class Orden implements Serializable {
         this.metodoPago = metodoPago;
     }
 
-    public float getTotal() {
+    public Float getTotal() {
         return total;
     }
 
-    public void setTotal(float total) {
+    public void setTotal(Float total) {
         this.total = total;
     }
 

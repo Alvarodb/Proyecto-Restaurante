@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -27,14 +26,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "usuario")
 @NamedQueries({
-    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")
-    , @NamedQuery(name = "Usuario.findByNombreUsuario", query = "SELECT u FROM Usuario u WHERE u.nombreUsuario = :nombreUsuario")
-    , @NamedQuery(name = "Usuario.findByClave", query = "SELECT u FROM Usuario u WHERE u.clave = :clave")
-    , @NamedQuery(name = "Usuario.findByNombre", query = "SELECT u FROM Usuario u WHERE u.nombre = :nombre")
-    , @NamedQuery(name = "Usuario.findByApellidos", query = "SELECT u FROM Usuario u WHERE u.apellidos = :apellidos")
-    , @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email = :email")
-    , @NamedQuery(name = "Usuario.findByAdministrador", query = "SELECT u FROM Usuario u WHERE u.administrador = :administrador")
-    , @NamedQuery(name = "Usuario.findByTelefono", query = "SELECT u FROM Usuario u WHERE u.telefono = :telefono")})
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")})
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,38 +36,27 @@ public class Usuario implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "nombre_usuario")
     private String nombreUsuario;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "clave")
     private String clave;
-    @Basic(optional = false)
-    @NotNull
+    @Size(max = 20)
     @Column(name = "nombre")
     private String nombre;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "apellidos")
     private String apellidos;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    @Size(max = 45)
     @Column(name = "email")
     private String email;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "administrador")
-    private short administrador;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 45)
+    private Short administrador;
+    @Size(max = 45)
     @Column(name = "telefono")
     private String telefono;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "usuario1")
-    private Direccion direccion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private List<Direccion> direccionList;
+    @OneToMany(mappedBy = "usuario")
     private List<Orden> ordenList;
 
     public Usuario() {
@@ -83,16 +64,6 @@ public class Usuario implements Serializable {
 
     public Usuario(String nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
-    }
-
-    public Usuario(String nombreUsuario, String clave, String nombre, String apellidos, String email, short administrador, String telefono) {
-        this.nombreUsuario = nombreUsuario;
-        this.clave = clave;
-        this.nombre = nombre;
-        this.apellidos = apellidos;
-        this.email = email;
-        this.administrador = administrador;
-        this.telefono = telefono;
     }
 
     public String getNombreUsuario() {
@@ -135,11 +106,11 @@ public class Usuario implements Serializable {
         this.email = email;
     }
 
-    public short getAdministrador() {
+    public Short getAdministrador() {
         return administrador;
     }
 
-    public void setAdministrador(short administrador) {
+    public void setAdministrador(Short administrador) {
         this.administrador = administrador;
     }
 
@@ -151,12 +122,12 @@ public class Usuario implements Serializable {
         this.telefono = telefono;
     }
 
-    public Direccion getDireccion() {
-        return direccion;
+    public List<Direccion> getDireccionList() {
+        return direccionList;
     }
 
-    public void setDireccion(Direccion direccion) {
-        this.direccion = direccion;
+    public void setDireccionList(List<Direccion> direccionList) {
+        this.direccionList = direccionList;
     }
 
     public List<Orden> getOrdenList() {

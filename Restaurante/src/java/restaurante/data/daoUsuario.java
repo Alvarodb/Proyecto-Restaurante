@@ -47,7 +47,7 @@ public class daoUsuario {
             u.setAdministrador(Short.valueOf(rs.getString("administrador")));
             u.setApellidos(rs.getString("apellidos"));
             u.setClave(rs.getString("clave"));
-            //u.setDireccion(rs.getString("direccion"));
+            u.setDireccionList(new restaurante.data.daoDirecciones().direccionesSearch(rs.getString("nombre_usuario")));
             u.setEmail(rs.getString("email"));
             u.setNombreUsuario(rs.getString("nombre_usuario"));
             u.setTelefono(rs.getString("telefono"));

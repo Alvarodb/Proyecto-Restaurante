@@ -30,11 +30,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "platillo")
 @NamedQueries({
-    @NamedQuery(name = "Platillo.findAll", query = "SELECT p FROM Platillo p")
-    , @NamedQuery(name = "Platillo.findById", query = "SELECT p FROM Platillo p WHERE p.id = :id")
-    , @NamedQuery(name = "Platillo.findByNombre", query = "SELECT p FROM Platillo p WHERE p.nombre = :nombre")
-    , @NamedQuery(name = "Platillo.findByPrecio", query = "SELECT p FROM Platillo p WHERE p.precio = :precio")
-    , @NamedQuery(name = "Platillo.findByDescripcion", query = "SELECT p FROM Platillo p WHERE p.descripcion = :descripcion")})
+    @NamedQuery(name = "Platillo.findAll", query = "SELECT p FROM Platillo p")})
 public class Platillo implements Serializable {
 
     private static final long serialVersionUID = 1L;

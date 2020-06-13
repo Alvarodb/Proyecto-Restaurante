@@ -28,8 +28,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "opcionservida")
 @NamedQueries({
-    @NamedQuery(name = "Opcionservida.findAll", query = "SELECT o FROM Opcionservida o")
-    , @NamedQuery(name = "Opcionservida.findByOpcion", query = "SELECT o FROM Opcionservida o WHERE o.opcion = :opcion")})
+    @NamedQuery(name = "Opcionservida.findAll", query = "SELECT o FROM Opcionservida o")})
 public class Opcionservida implements Serializable {
 
     private static final long serialVersionUID = 1L;
