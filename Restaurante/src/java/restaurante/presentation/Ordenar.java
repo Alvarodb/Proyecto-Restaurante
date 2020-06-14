@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import restaurante.logic.Model;
 import restaurante.logic.Orden;
 import restaurante.logic.Usuario;
+import restaurante.logic.Detalle;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
@@ -44,7 +45,19 @@ public class Ordenar {
         Timestamp timestamp = new Timestamp(now.getTime());
         ord.setFechahora(timestamp);
         ord.setTotal((float) session.getAttribute("total"));
-        ord.setUsuario((Usuario) session.getAttribute("usuario"));
+        ord.setUsuario((Usuario) session.getAttribute("usuario"));      
         Model.instance().registrarOrden(ord);
+        
+        List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
+        
+        for(Detalle d: result){
+            d.setOrden(new Orden());
+            d.getOrden().setId(Model.instance().idOrden());
+            d.getPlatillo().setId(Model.instance().idPlatillo(d.getPlatillo().getNombre()));
+            Model.instance().agregarDetalles(d);
+        }
+        
+        
+        
     } 
 }

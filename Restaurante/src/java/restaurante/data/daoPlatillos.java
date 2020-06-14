@@ -41,6 +41,22 @@ public class daoPlatillos {
         } catch (SQLException ex) { }
         return resultado;
     }
+      public int platilloIdSearch(String platillo) throws Exception {
+        int id = 0;
+        try {
+            String sql = "select id "
+                    + "from platillo where nombre='%s'";
+            sql = String.format(sql, platillo);
+            ResultSet rs = db.executeQuery(sql);
+            if (rs.next()) {
+                id = Integer.valueOf(rs.getString("id"));
+            } else {
+                throw new Exception("Platillo no existe");
+            }
+        } catch (SQLException ex) {
+        }
+        return id;
+    }
     private Platillo platillo(ResultSet rs) throws Exception{
         try {
             Platillo plat = new Platillo();

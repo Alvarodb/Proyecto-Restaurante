@@ -6,11 +6,7 @@
 package restaurante.logic;
 
 import java.util.List;
-import restaurante.data.daoCategorias;
-import restaurante.data.daoOpcion;
-import restaurante.data.daoPlatillos;
-import restaurante.data.daoUsuario;
-import restaurante.data.daoOrden;
+import restaurante.data.*;
 /**
  *
  * @author Álvaro
@@ -22,6 +18,7 @@ public class Model {
     daoOpcion opciones;
     daoUsuario usuarios;
     daoOrden ordenes;
+    daoDetalles detalles;
     
     public Model(){
         categorias = new daoCategorias();
@@ -29,6 +26,7 @@ public class Model {
         opciones = new daoOpcion();
         usuarios = new daoUsuario();
         ordenes = new daoOrden();
+        detalles = new daoDetalles();
     }
     //categorias
      public List<Categoria> buscarCategorias(){ 
@@ -45,6 +43,15 @@ public class Model {
         List<Platillo> result = platillos.platillosSearchCategorias(nombre);
         return result;
     }
+    //obtener el id de un platillo
+    public int idPlatillo(String platillo) throws Exception{
+        return platillos.platilloIdSearch(platillo);
+    }
+    
+    
+    
+    
+    
     //opciones
     
     //opciones(adicionales en la lista de atributos) por platillo
@@ -69,6 +76,21 @@ public class Model {
     public void registrarOrden(Orden o) throws Exception{
         ordenes.OrdenAdd(o);
     }
+    // obtener id de orden
+    
+    public int idOrden() throws Exception{
+        return ordenes.ordenIdSearch();
+    }
+    
+    
+    //detalles
+    
+    //Agregar detalles a orden
+    
+    public void agregarDetalles(Detalle d) throws Exception{
+        detalles.DetallesAdd(d);
+    }
+    
    
     
     
