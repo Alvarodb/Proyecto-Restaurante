@@ -40,16 +40,12 @@
     }
     function render(user){
         if(!user){
-            $("#options").append("<li id='login' class='nav-link'>Login</li>"+
-                "<li id='register' class='nav-link'>Register</li>");
-
-             $("#register").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/register.html");});
-             $("#login").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/login.html");});
+            $("#options").append("<li id='login' class='nav-link'><a href='/Restaurante/presentation/cliente/login.html'>Login</a></li>"+
+                "<li id='register' class='nav-link'><a href='/Restaurante/presentation/cliente/register.html'>Register</a></li>");
         }
         else{
-            $("#options").append("<li id='login' class='nav-link'>My Account</li>");
+            $("#options").append("<li id='account' class='nav-link'><a href='/Restaurante/presentation/cliente/account.html'>My Account</a></li>");
             $("#options").append("<li id='logout' class='nav-link'>Logout</li>");
-            $("#login").on('click',function(){window.location.replace("/Restaurante/presentation/cliente/login.html");});
             $("#logout").on('click',function(){logout();});
         }
         

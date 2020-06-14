@@ -17,35 +17,53 @@ and open the template in the editor.
     </head>
     <body class="text-center">
         <div data-include="../header"></div>
+        <div class="alert alert-danger alert-dismissible fade show" id="alert" role="alert" style="display:none;">
+            <strong>Fill</strong> the required fills.
+            <button type="button" class="close" onclick="$('#alert').hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-sm-4">
                 </div>
-                    <div class="col-sm-4">
-                        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-                        <label for="inputEmail" class="sr-only">Email address</label>
-                        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                        <label for="inputPassword" class="sr-only">Password</label>
-                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                        <div class="checkbox mb-3">
-                            <label>
-                                <input type="checkbox" value="remember-me"> Remember me
-                            </label>
-                        </div>
-                        <div class="checkout">
-                            <button class="btn btn-primary" id="login" type="submit">Sign in</button>
-                        </div>
+                <div class="col-sm-4">
+                    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                    <label for="inputEmail" class="sr-only">Email address</label>
+                    <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Remember me
+                        </label>
+                    </div>
+                    <div class="checkout">
+                        <button class="btn btn-primary" id="login" type="submit">Sign in</button>
                     </div>
                 </div>
             </div>
+        </div>
         <div data-include="../footer"></div>
         <script>
             function loaded() {
                 $("#login").on("click", function () {
+                if(!validar()){
                     login();
-                });
+                }
+            });
             }
             $(loaded);
+            function validar() {
+                var error = false;
+                $('input').each(function () {
+                    if (!$(this).val()) {
+                        $('#alert').show();
+                        error = true;
+                    }
+                });
+                return error;
+            }
 
             function login() {
                 usuario = {email: $("#inputEmail").val(),
@@ -55,8 +73,8 @@ and open the template in the editor.
                         .then(() => {
                             window.location.replace("/Restaurante/presentation/cliente/View.html");
                         },
-                                (error) => {
-                            alert(errorMessage(error.status));
+                                () => {
+                            $('#alert').show();
                         });
 
             }
