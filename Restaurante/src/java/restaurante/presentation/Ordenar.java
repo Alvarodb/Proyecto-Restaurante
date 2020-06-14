@@ -23,6 +23,7 @@ import restaurante.logic.Orden;
 import restaurante.logic.Usuario;
 import restaurante.logic.Detalle;
 import restaurante.logic.Opcion;
+import restaurante.logic.Adicional;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
@@ -35,8 +36,6 @@ public class Ordenar {
     
     @Context
     HttpServletRequest request;
-    
-    
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -60,9 +59,12 @@ public class Ordenar {
             d.getPlatillo().setId(Model.instance().idPlatillo(d.getPlatillo().getNombre()));
             keyDetalle = Model.instance().agregarDetalles(d);
             
-            //for(Opcion opc: d.getPlatillo().getOpcionList()){
-            //    
-            //}
+            for(Opcion opc: d.getPlatillo().getOpcionList()){
+               Model.instance().agregarOpcionServida(opc.getId(),keyDetalle);
+               for(Adicional ad: opc.getAdicionalList()){
+                   Model.instance().agregarAdicionalServido(ad.getId(),opc.getId());
+               }
+            }
           
         }
         

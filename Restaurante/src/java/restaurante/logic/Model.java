@@ -19,6 +19,8 @@ public class Model {
     daoUsuario usuarios;
     daoOrden ordenes;
     daoDetalles detalles;
+    daoOpcionServida opcionesServidas;
+    daoAdicionalServido adicionalesServidos;
     
     public Model(){
         categorias = new daoCategorias();
@@ -27,6 +29,8 @@ public class Model {
         usuarios = new daoUsuario();
         ordenes = new daoOrden();
         detalles = new daoDetalles();
+        opcionesServidas = new daoOpcionServida();
+        adicionalesServidos =  new daoAdicionalServido();
     }
     //categorias
      public List<Categoria> buscarCategorias(){ 
@@ -82,6 +86,20 @@ public class Model {
         return detalles.DetallesAdd(d);
     }
     
+    //opciones servidas
+    
+    //Agregar opciones servidas (seleccionadas para cada orden)
+    
+    public void agregarOpcionServida(int opcion, int detalle) throws Exception{
+        opcionesServidas.opcionServidaAdd(opcion,detalle);
+    }
+    //adicional servido
+    
+    //Agregar adicionales para cada opcion seleccionada en una orden
+    
+    public void agregarAdicionalServido(int adicional,int opcion) throws Exception{
+        adicionalesServidos.adicionalServidoAdd(adicional,opcion);
+    }
    
     
     
