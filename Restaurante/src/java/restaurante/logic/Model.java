@@ -68,6 +68,11 @@ public class Model {
         Usuario result = usuarios.usuarioSearch(email,clave);
         return result;
     }
+    //registrar  usuario
+    public void registrarUsuario(Usuario u) throws Exception{
+        usuarios.usuarioAdd(u);
+    }
+    
     
     //ordenes
     

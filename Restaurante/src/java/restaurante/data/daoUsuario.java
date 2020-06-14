@@ -39,6 +39,15 @@ public class daoUsuario {
         }
         return resultado;
     }
+    public void usuarioAdd(Usuario u) throws Exception {
+        String sql="insert into usuario(nombre_usuario,clave,nombre,apellidos,email,administrador,telefono) "+
+                "values('%s','%s','%s','%s','%s','%s','%s')";
+        sql=String.format(sql,u.getNombreUsuario(),u.getClave(),u.getNombre(),u.getApellidos(),u.getEmail(),0,u.getTelefono());
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Usuario ya existe");
+        }
+    }
 
     private Usuario usuario(ResultSet rs) throws Exception {
         try {

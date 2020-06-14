@@ -22,7 +22,12 @@ and open the template in the editor.
         <div data-include="../header"></div>
 
         <div class="container">
-            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="firstName" class="col-sm-3 control-label">Cedula</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="cedula" placeholder="Cedula de identidad" class="form-control" autofocus>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="firstName" class="col-sm-3 control-label">First Name</label>
                     <div class="col-sm-9">
@@ -65,8 +70,48 @@ and open the template in the editor.
                         <span class="help-block">*Required fields</span>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Register</button>
-            </form> 
+                <button type="submit" id="register" class="btn btn-primary btn-block">Register</button>
         </div>
+        <script>
+            function loaded() {
+                $("#register").on("click", function () {
+                    register();
+                });
+            }
+            $(loaded);
+
+            function register() {
+                usuario = {
+                    nombreUsuario:  $("#cedula").val(),
+                    nombre: $("#firstName").val(),
+                    apellidos: $("#lastName").val(),
+                    email: $("#email").val(),
+                    clave: $("#password").val(),
+                    telefono: $("#phoneNumber").val()
+                };
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/register/", data: JSON.stringify(usuario), contentType: "application/json"})
+                        .then(() => {
+                            window.location.replace("/Restaurante/presentation/cliente/login.html");
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+
+            }
+            function errorMessage(status) {
+                switch (status) {
+                    case 404:
+                        return "Registro no encontrado";
+                    case 403:
+                    case 405:
+                        return "Usuario no autorizado";
+                    case 406:
+                        return "Registro duplicado";
+                    default:
+                        return "Error: " + status;
+                }
+            }
+
+        </script>
     </body>
 </html>
