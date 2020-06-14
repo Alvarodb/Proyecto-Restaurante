@@ -5,9 +5,12 @@
  */
 package restaurante.data;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import restaurante.logic.Orden;
+
 /**
  *
  * @author Álvaro
@@ -20,30 +23,23 @@ public class daoOrden {
         db = new RelDatabase();
     }
 
-    public void OrdenAdd(Orden d) throws Exception {
-        String sql = "insert into orden(tipo,fechahora,estado,metodo_pago,total,usuario) "
-                + "values('%s','%s','%s','%s','%s','%s')";
-        sql = String.format(sql, d.getTipo(), d.getFechahora(), d.getEstado(), d.getMetodoPago(), d.getTotal(), d.getUsuario().getNombreUsuario());
-        int count = db.executeUpdate(sql);
-        if (count == 0) {
-            throw new Exception("Orden ya existe");
-        }
-    }
-
-    public int ordenIdSearch() throws Exception {
-        int id = 0;
+    public int OrdenAdd(Orden d) throws Exception {
+        int generatedKey = 0;
         try {
-            String sql = "select id "
-                    + "from orden order by id desc limit 1";
-            sql = String.format(sql);
-            ResultSet rs = db.executeQuery(sql);
+           
+            String sql = "insert into orden(tipo,fechahora,estado,metodo_pago,total,usuario) "
+                    + "values('%s','%s','%s','%s','%s','%s')";
+            sql = String.format(sql, d.getTipo(), d.getFechahora(), d.getEstado(), d.getMetodoPago(), d.getTotal(), d.getUsuario().getNombreUsuario());
+
+            PreparedStatement stmt = db.cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()) {
-                id = Integer.valueOf(rs.getString("id"));
-            } else {
-                throw new Exception("Orden no existe");
+                generatedKey = rs.getInt(1);
             }
+
         } catch (SQLException ex) {
         }
-        return id;
+        return generatedKey;
     }
 }

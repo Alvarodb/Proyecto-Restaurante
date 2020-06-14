@@ -22,6 +22,7 @@ import restaurante.logic.Model;
 import restaurante.logic.Orden;
 import restaurante.logic.Usuario;
 import restaurante.logic.Detalle;
+import restaurante.logic.Opcion;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
@@ -40,23 +41,30 @@ public class Ordenar {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void ordenar(Orden ord) throws Exception{ 
+        int keyOrden;
+        int keyDetalle;
+        
         HttpSession session = request.getSession(true);
         Date now = new Date();
         Timestamp timestamp = new Timestamp(now.getTime());
         ord.setFechahora(timestamp);
         ord.setTotal((float) session.getAttribute("total"));
         ord.setUsuario((Usuario) session.getAttribute("usuario"));      
-        Model.instance().registrarOrden(ord);
+        keyOrden = Model.instance().registrarOrden(ord);
         
         List<Detalle> result = (List<Detalle>) session.getAttribute("cart");
         
         for(Detalle d: result){
             d.setOrden(new Orden());
-            d.getOrden().setId(Model.instance().idOrden());
+            d.getOrden().setId(keyOrden);
             d.getPlatillo().setId(Model.instance().idPlatillo(d.getPlatillo().getNombre()));
-            Model.instance().agregarDetalles(d);
+            keyDetalle = Model.instance().agregarDetalles(d);
+            
+            //for(Opcion opc: d.getPlatillo().getOpcionList()){
+            //    
+            //}
+          
         }
-        
         
         
     } 

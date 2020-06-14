@@ -47,11 +47,7 @@ public class Model {
     public int idPlatillo(String platillo) throws Exception{
         return platillos.platilloIdSearch(platillo);
     }
-    
-    
-    
-    
-    
+
     //opciones
     
     //opciones(adicionales en la lista de atributos) por platillo
@@ -73,22 +69,17 @@ public class Model {
     
     //agregar ordenes
     
-    public void registrarOrden(Orden o) throws Exception{
-        ordenes.OrdenAdd(o);
+    public int registrarOrden(Orden o) throws Exception{
+        return ordenes.OrdenAdd(o);
     }
-    // obtener id de orden
-    
-    public int idOrden() throws Exception{
-        return ordenes.ordenIdSearch();
-    }
-    
+
     
     //detalles
     
     //Agregar detalles a orden
     
-    public void agregarDetalles(Detalle d) throws Exception{
-        detalles.DetallesAdd(d);
+    public int agregarDetalles(Detalle d) throws Exception{
+        return detalles.DetallesAdd(d);
     }
     
    

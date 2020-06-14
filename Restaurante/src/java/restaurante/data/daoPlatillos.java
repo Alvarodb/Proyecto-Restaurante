@@ -41,7 +41,7 @@ public class daoPlatillos {
         } catch (SQLException ex) { }
         return resultado;
     }
-      public int platilloIdSearch(String platillo) throws Exception {
+    public int platilloIdSearch(String platillo) throws Exception {
         int id = 0;
         try {
             String sql = "select id "
