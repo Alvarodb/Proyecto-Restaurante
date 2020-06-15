@@ -83,6 +83,12 @@ public class Model {
     public int registrarOrden(Orden o) throws Exception{
         return ordenes.OrdenAdd(o);
     }
+    //ordenes por usuario
+    public List<Orden> buscarOrdenes(String nombre) throws Exception{
+        List<Orden> result = ordenes.ordenesSearch(nombre);
+        return result;
+    }
+    
 
     
     //detalles

@@ -66,8 +66,14 @@ public class Ordenar {
                }
             }
           
-        }
-        
-        
+        }  
     } 
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Orden> listOrdenes() throws Exception{ 
+        HttpSession session = request.getSession(true);
+        Usuario user  = (Usuario) session.getAttribute("usuario");
+        return Model.instance().buscarOrdenes(user.getNombreUsuario());
+    } 
+   
 }

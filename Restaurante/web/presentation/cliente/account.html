@@ -22,9 +22,13 @@ and open the template in the editor.
             <!-- Sidebar -->
             <div class="row">
                 <div class="col-sm-2">
+                    <div class="sidebar-header">
+                        <h3>Options</h3>
+                    </div>
                     <nav id="sidebar">
                         <ul class="list-unstyled components" id="categorias">
                             <li>Address Book</li>
+                            <li>Recent Orders</li>
                         </ul>
                     </nav>
                 </div>
@@ -138,6 +142,8 @@ and open the template in the editor.
                 switch (option) {
                     case  'Address Book':
                         direcciones();
+                    case 'Recent Orders':
+                        orders();
                     default:
                         return 'Error';
                 }
@@ -150,6 +156,39 @@ and open the template in the editor.
                                 (error) => {
                             alert(errorMessage(error.status));
                         });
+            }
+            function  orders() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenar", contentType: "application/json"})
+                        .then((ordenes) => {
+                            listOrdenes(ordenes);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function listOrdenes(ordenes) {
+                $("#content").html("");
+                $("#content").append(
+                        "<table class='table'>" +
+                        "<thead><tr><th scope='col'>Id</th><th scope='col'>Location</th><th scope='col'>Status</th><th scope='col'>Order Total</th>"+
+                        "<tbody id='listadoOrdenes'>" +
+                        "</tbody>" +
+                        "</table>"
+                        );
+
+                var listado = $("#listadoOrdenes");
+                listado.html("");
+                ordenes.forEach((ord) => {
+                    rowOrden(listado, ord);
+                });
+            }
+            function rowOrden(listado, orden) {
+                var tr = $("<tr />");
+                tr.html( "<td>" + orden.id + "</td>" +
+                        "<td>" + orden.direccion + "</td>" +
+                        "<td>" + orden.estado + "</td>" +
+                        "<td>" + orden.total + "</td>");
+                listado.append(tr);
             }
             function listDirecciones(direcciones) {
                 $("#content").html("");

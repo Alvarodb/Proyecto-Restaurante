@@ -29,7 +29,8 @@ and open the template in the editor.
                 orden = {
                     tipo: 'ASAP',
                     metodo_pago:  $("input[name='optradio']:checked"),
-                    estado: 'Pendiente'
+                    estado: 'Pendiente',
+                    direccion: $("#dir").val()
                 };
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenar", data: JSON.stringify(orden),contentType: "application/json"})
                         .then(() => {
