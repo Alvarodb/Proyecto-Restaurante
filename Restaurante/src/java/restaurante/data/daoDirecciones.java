@@ -22,6 +22,16 @@ public class daoDirecciones {
     public daoDirecciones(){
         db = new RelDatabase();
     }
+    
+    public void direccionAdd(Direccion d, String nombre) throws Exception {
+        String sql="insert into direccion(Usuario,address1,address2,city,state,postcode,country) "+
+                "values('%s','%s','%s','%s','%s','%s','%s')";
+        sql=String.format(sql,nombre,d.getAddress1(),d.getAddress2(),d.getCity(),d.getState(),d.getPostcode(),d.getCountry());
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Direccion ya existe");
+        }
+    }
     public List<Direccion> direccionesSearch(String usuario){
         List<Direccion> resultado = new ArrayList<Direccion>();
         try {
@@ -37,6 +47,7 @@ public class daoDirecciones {
     private Direccion direccion(ResultSet rs){
         try {
             Direccion dir = new Direccion();
+            dir.setId(Integer.valueOf(rs.getString("id")));
             dir.setAddress1(rs.getString("address1"));
             dir.setAddress2(rs.getString("address2"));
             dir.setCity(rs.getString("city"));

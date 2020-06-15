@@ -21,6 +21,7 @@ public class Model {
     daoDetalles detalles;
     daoOpcionServida opcionesServidas;
     daoAdicionalServido adicionalesServidos;
+    daoDirecciones direcciones;
     
     public Model(){
         categorias = new daoCategorias();
@@ -31,6 +32,7 @@ public class Model {
         detalles = new daoDetalles();
         opcionesServidas = new daoOpcionServida();
         adicionalesServidos =  new daoAdicionalServido();
+        direcciones = new daoDirecciones();
     }
     //categorias
      public List<Categoria> buscarCategorias(){ 
@@ -104,6 +106,19 @@ public class Model {
     
     public void agregarAdicionalServido(int adicional,int opcion) throws Exception{
         adicionalesServidos.adicionalServidoAdd(adicional,opcion);
+    }
+    
+    
+    //direcciones
+    
+    //Agregar direccion a un usuario
+    
+    public void agregarDireccion(Direccion dir, String nombre) throws Exception{
+        direcciones.direccionAdd(dir,nombre);
+    }
+    //buscar direcciones de un usuario
+    public List<Direccion> buscarDirecciones(String nombre) throws Exception{
+        return direcciones.direccionesSearch(nombre);
     }
    
     

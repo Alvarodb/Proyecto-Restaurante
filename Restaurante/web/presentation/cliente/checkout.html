@@ -73,6 +73,9 @@ and open the template in the editor.
                             "</div>" +
                             "<div id='direcciones'>" +
                             "<h6 class='card-subtitle mb-2 text-muted'>Select your address:</h6>" +
+                            "<input type='text' id='dir' class='form-control' list='select-list-id'/>"+
+                            "<datalist id='select-list-id'>"+
+                            "</datalist>"+                          
                             "</div>" +
                             "<button class='btn btn-primary' id='order' type='button'>Checkout</button>" +
                             "</form>" +
@@ -87,12 +90,9 @@ and open the template in the editor.
             function direcciones(usuario) {
                 if (usuario) {
                     usuario.direccionList.forEach((dir) => {
-                        $("#direcciones").append(
-                                "<input type='text' id='dir' class='form-control' list='select-list-id'/>" +
-                                "<datalist id='select-list-id'>" +
-                                "<option value='" + dir.address1 + "," + dir.city + "'></option>" +
-                                "</datalist>"
-                                );
+                        $("#select-list-id").append(
+                            "<option value='" + dir.address1 + "," + dir.city + "'></option>"         
+                        );
                     });
                 }
             }

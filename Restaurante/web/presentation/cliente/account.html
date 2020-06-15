@@ -24,29 +24,157 @@ and open the template in the editor.
                 <div class="col-sm-2">
                     <nav id="sidebar">
                         <ul class="list-unstyled components" id="categorias">
-                            <li>My Account</li>
                             <li>Address Book</li>
-                            <li>Recent Orders</li>
                         </ul>
                     </nav>
                 </div>
                 <!-- Page Content -->
-                <div class="col-sm-10">
+                <div class="col-sm-10" id="content">
 
-                </div>         
+                </div>   
+
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Address Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal-body">                               
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="send">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div data-include="../footer"></div>
-     
+
         <script>
-        
-    
-    
-    
-    
-    
-    
+            function loaded() {
+                $("#sidebar").on("click", "li", function () {
+                    buscar($(this).text());
+                });
+                $("#send").on("click", function () {
+                    addAddress();
+                });
+            }
+            $(loaded);
+            function buscar(option) {
+                switch (option) {
+                    case  'Address Book':
+                        direcciones();
+                    default:
+                        return 'Error';
+                }
+            }
+            function direcciones() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/direcciones", contentType: "application/json"})
+                        .then((direcciones) => {
+                            listDirecciones(direcciones);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function listDirecciones(direcciones) {
+                $("#content").html("");
+                $("#content").append(
+                        "<table class='table'>" +
+                        "<thead><tr><th scope='col'>Address 1</th><th scope='col'>Address 2</th><th scope='col'>City</th><th scope='col'>State</th>" +
+                        "<th scope='col'>Postcode</th><th scope='col'>Country</th></tr></thead>" +
+                        "<tbody id='listadoDirecciones'>" +
+                        "</tbody>" +
+                        "</table>" +
+                        "<button class='btn btn-primary' id='addAddress' type='button' data-toggle='modal' data-target='#exampleModal'>Add Address</button>"
+                        );
+                $("#addAddress").on("click", function () {
+                    add();
+                });
+                var listado = $("#listadoDirecciones");
+                listado.html("");
+                direcciones.forEach((dir) => {
+                    rowDireccion(listado, dir);
+                });
+            }
+            function rowDireccion(listado, dir) {
+                var tr = $("<tr />");
+                tr.html("<td>" + dir.address1 + "</td>" +
+                        "<td>" + dir.address2 + "</td>" +
+                        "<td>" + dir.city + "</td>" +
+                        "<td>" + dir.state + "</td>" +
+                        "<td>" + dir.postcode + "</td>" +
+                        "<td>" + dir.country + "</td>");
+                //"<td id='edit'><input type='button' name='edit' value='Edit'></td>");
+                //tr.find("#edit").on("click", () => {
+                //    edit(dir.id);
+                //});
+                listado.append(tr);
+            }
+            function add() {
+                $("#modal-body").append(
+                        "<div class='form-group'>" +
+                        "<label for='address1' class='col-form-label'>Address 1:</label>" +
+                        "<input type='text' class='form-control' id='address1'>" +
+                        "</div>" +
+                        "<div class='form-group'>" +
+                        "<label for='address2' class='col-form-label'>Address 2:</label>" +
+                        "<input type='text' class='form-control' id='address2'>" +
+                        "</div>" +
+                        "<div class='form-group'>" +
+                        "<label for='city' class='col-form-label'>City:</label>" +
+                        "<input type='text' class='form-control' id='city'>" +
+                        "</div>" +
+                        "<div class='form-group'>" +
+                        "<label for='state' class='col-form-label'>State:</label>" +
+                        "<input type='text' class='form-control' id='state'>" +
+                        "</div>" +
+                        "<div class='form-group'>" +
+                        "<label for='postcode' class='col-form-label'>Postcode:</label>" +
+                        "<input type='text' class='form-control' id='postcode'>" +
+                        "</div>" +
+                        "<div class='form-group'>" +
+                        "<label for='country' class='col-form-label'>Country:</label>" +
+                        "<input type='text' class='form-control' id='country'>" +
+                        "</div>"
+                        );
+            }
+            function addAddress() {
+                direccion = {
+                    address1: $("#address1").val(),
+                    address2: $("#address2").val(),
+                    city: $("#city").val(),
+                    state: $("#state").val(),
+                    postcode: $("#postcode").val(),
+                    country: $("#country").val()
+                };
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/direcciones", data:JSON.stringify(direccion),contentType: "application/json"})
+                        .then((direcciones) => {
+                            listDirecciones(direcciones);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+//            function edit(description) {
+//                pelicula = {title: description};
+//                $.ajax({type: "POST", url: "api/peliculas/edit", data: JSON.stringify(pelicula), contentType: "application/json"})
+//                        .then((obj) => {
+//                            show(obj);
+//                            $("#save").attr('disabled', false);
+//                            $("#cancel").attr('disabled', false);
+//                            $("input:text").attr('disabled', false);
+//                        },
+//                                (error) => {
+//                            alert(errorMessage(error.status));
+//                        });
+//            }
         </script>
-        
+
     </body>
 </html>
