@@ -34,6 +34,7 @@ and open the template in the editor.
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenar", data: JSON.stringify(orden),contentType: "application/json"})
                         .then(() => {
                             //orden registrada
+                            window.location.replace("/Restaurante/presentation/cliente/ready.html");
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
