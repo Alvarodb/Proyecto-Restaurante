@@ -120,9 +120,10 @@ public class Model {
     public List<Direccion> buscarDirecciones(String nombre) throws Exception{
         return direcciones.direccionesSearch(nombre);
     }
-   
-    
-    
+    //actualizar direccion de un usuario
+    public void actualizarDireccion(Direccion dir) throws Exception{
+        direcciones.direccionUpdate(dir);
+    }
     static Model the_instance;
     public static Model instance(){
         if(the_instance == null){

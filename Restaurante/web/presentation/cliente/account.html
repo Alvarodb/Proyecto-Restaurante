@@ -42,10 +42,75 @@ and open the template in the editor.
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body" id="modal-body">                               
+                            <div class="modal-body" id="modal-body">      
+                                <div class='form-group'>
+                                    <label for='address1' class='col-form-label'>Address 1:</label> 
+                                    <input type='text' class='form-control' id='address1'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='address2' class='col-form-label'>Address 2:</label>
+                                    <input type='text' class='form-control' id='address2'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='city' class='col-form-label'>City:</label>
+                                    <input type='text' class='form-control' id='city'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='state' class='col-form-label'>State:</label>
+                                    <input type='text' class='form-control' id='state'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='postcode' class='col-form-label'>Postcode:</label>
+                                    <input type='text' class='form-control' id='postcode'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='country' class='col-form-label'>Country:</label>
+                                    <input type='text' class='form-control' id='country'>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" id="send">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel2">Address Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modal-body2"> 
+                                <div class='form-group'>
+                                    <label for='address12' class='col-form-label'>Address 1:</label> 
+                                    <input type='text' class='form-control' id='address12'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='address22' class='col-form-label'>Address 2:</label>
+                                    <input type='text' class='form-control' id='address22'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='city2' class='col-form-label'>City:</label>
+                                    <input type='text' class='form-control' id='city2'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='state2' class='col-form-label'>State:</label>
+                                    <input type='text' class='form-control' id='state2'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='postcode2' class='col-form-label'>Postcode:</label>
+                                    <input type='text' class='form-control' id='postcode2'>
+                                </div>
+                                <div class='form-group'>
+                                    <label for='country2' class='col-form-label'>Country:</label>
+                                    <input type='text' class='form-control' id='country2'>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="update">Update</button>
                             </div>
                         </div>
                     </div>
@@ -56,12 +121,16 @@ and open the template in the editor.
         <div data-include="../footer"></div>
 
         <script>
+            var dirId;
             function loaded() {
                 $("#sidebar").on("click", "li", function () {
                     buscar($(this).text());
                 });
                 $("#send").on("click", function () {
                     addAddress();
+                });
+                $("#update").on("click", function () {
+                    editAddress();
                 });
             }
             $(loaded);
@@ -93,9 +162,7 @@ and open the template in the editor.
                         "</table>" +
                         "<button class='btn btn-primary' id='addAddress' type='button' data-toggle='modal' data-target='#exampleModal'>Add Address</button>"
                         );
-                $("#addAddress").on("click", function () {
-                    add();
-                });
+
                 var listado = $("#listadoDirecciones");
                 listado.html("");
                 direcciones.forEach((dir) => {
@@ -109,40 +176,13 @@ and open the template in the editor.
                         "<td>" + dir.city + "</td>" +
                         "<td>" + dir.state + "</td>" +
                         "<td>" + dir.postcode + "</td>" +
-                        "<td>" + dir.country + "</td>");
-                //"<td id='edit'><input type='button' name='edit' value='Edit'></td>");
-                //tr.find("#edit").on("click", () => {
-                //    edit(dir.id);
-                //});
+                        "<td>" + dir.country + "</td>" +
+                        "<td id='edit'><input type='button' name='edit' value='Edit' data-toggle='modal' data-target='#exampleModal2'></td>");
+                tr.find("#edit").on("click", () => {
+                    dirId = dir.id;
+                    edit();
+                });
                 listado.append(tr);
-            }
-            function add() {
-                $("#modal-body").append(
-                        "<div class='form-group'>" +
-                        "<label for='address1' class='col-form-label'>Address 1:</label>" +
-                        "<input type='text' class='form-control' id='address1'>" +
-                        "</div>" +
-                        "<div class='form-group'>" +
-                        "<label for='address2' class='col-form-label'>Address 2:</label>" +
-                        "<input type='text' class='form-control' id='address2'>" +
-                        "</div>" +
-                        "<div class='form-group'>" +
-                        "<label for='city' class='col-form-label'>City:</label>" +
-                        "<input type='text' class='form-control' id='city'>" +
-                        "</div>" +
-                        "<div class='form-group'>" +
-                        "<label for='state' class='col-form-label'>State:</label>" +
-                        "<input type='text' class='form-control' id='state'>" +
-                        "</div>" +
-                        "<div class='form-group'>" +
-                        "<label for='postcode' class='col-form-label'>Postcode:</label>" +
-                        "<input type='text' class='form-control' id='postcode'>" +
-                        "</div>" +
-                        "<div class='form-group'>" +
-                        "<label for='country' class='col-form-label'>Country:</label>" +
-                        "<input type='text' class='form-control' id='country'>" +
-                        "</div>"
-                        );
             }
             function addAddress() {
                 direccion = {
@@ -153,7 +193,7 @@ and open the template in the editor.
                     postcode: $("#postcode").val(),
                     country: $("#country").val()
                 };
-                $.ajax({type: "POST", url: "/Restaurante/restaurante/direcciones", data:JSON.stringify(direccion),contentType: "application/json"})
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/direcciones", data: JSON.stringify(direccion), contentType: "application/json"})
                         .then((direcciones) => {
                             listDirecciones(direcciones);
                         },
@@ -161,19 +201,25 @@ and open the template in the editor.
                             alert(errorMessage(error.status));
                         });
             }
-//            function edit(description) {
-//                pelicula = {title: description};
-//                $.ajax({type: "POST", url: "api/peliculas/edit", data: JSON.stringify(pelicula), contentType: "application/json"})
-//                        .then((obj) => {
-//                            show(obj);
-//                            $("#save").attr('disabled', false);
-//                            $("#cancel").attr('disabled', false);
-//                            $("input:text").attr('disabled', false);
-//                        },
-//                                (error) => {
-//                            alert(errorMessage(error.status));
-//                        });
-//            }
+            function editAddress() {
+                direccion = {
+                    id: dirId,
+                    address1: $("#address12").val(),
+                    address2: $("#address22").val(),
+                    city: $("#city2").val(),
+                    state: $("#state2").val(),
+                    postcode: $("#postcode2").val(),
+                    country: $("#country2").val()
+                };
+                $.ajax({type: "PUT", url: "/Restaurante/restaurante/direcciones", data: JSON.stringify(direccion), contentType: "application/json"})
+                        .then((direcciones) => {
+                            listDirecciones(direcciones);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+
         </script>
 
     </body>

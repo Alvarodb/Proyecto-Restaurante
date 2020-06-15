@@ -57,5 +57,18 @@ public class Direcciones {
             throw new NotAcceptableException(); 
         }
     }
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})    
+    public List<Direccion> update(Direccion dir) { 
+        HttpSession session = request.getSession(true);
+        Usuario user  = (Usuario) session.getAttribute("usuario");
+        try {
+            Model.instance().actualizarDireccion(dir);
+            return Model.instance().buscarDirecciones(user.getNombreUsuario());
+        } catch (Exception ex) {
+            throw new NotAcceptableException(); 
+        }
+    }
     
 }

@@ -32,6 +32,15 @@ public class daoDirecciones {
             throw new Exception("Direccion ya existe");
         }
     }
+    public void direccionUpdate(Direccion dir) throws Exception{
+        String sql="update direccion set address1='%s',address2='%s',city='%s',state='%s',postcode='%s',country='%s' "+
+                "where id='%s'";
+        sql=String.format(sql,dir.getAddress1(),dir.getAddress2(),dir.getCity(),dir.getState(),dir.getPostcode(),dir.getCountry(),dir.getId());   
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Direccion no existe");
+        }
+    }
     public List<Direccion> direccionesSearch(String usuario){
         List<Direccion> resultado = new ArrayList<Direccion>();
         try {
