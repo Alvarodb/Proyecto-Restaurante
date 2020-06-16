@@ -140,10 +140,10 @@ and open the template in the editor.
             $(loaded);
             function buscar(option) {
                 switch (option) {
-                    case  'Address Book':
-                        direcciones();
+                    case 'Address Book':
+                        return direcciones();
                     case 'Recent Orders':
-                        orders();
+                        return orders();
                     default:
                         return 'Error';
                 }
