@@ -117,8 +117,17 @@ function listOpciones(opciones, platillo) {
                 }));
             });
         }
-        ;
+        else if (opc.tipo === 'single') {
+            opc.adicionalList.forEach((adi) => {
+                $('#content').append($('<div>', {
+                    class: 'radio',
+                    html: "<label><input type='radio' name='" + opc.nombre + "' id='" + adi.nombre + "'" + " value=''>" + adi.nombre + "   $" + adi.precio + "</label>"
+                }));
+            });
+        }
     });
+
+   
 
     $('#content').append($('<div>', {
         class: 'modal-footer',
