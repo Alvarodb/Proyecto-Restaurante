@@ -6,6 +6,7 @@
 package restaurante.logic;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -50,8 +51,8 @@ public class Adicional implements Serializable {
     @JoinColumn(name = "opcion", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Opcion opcion;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "adicional1")
-    private Adicionalservido adicionalservido;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "adicional")
+    private List<Adicionalservido> adicionalservidoList;
 
     public Adicional() {
     }
@@ -98,12 +99,12 @@ public class Adicional implements Serializable {
         this.opcion = opcion;
     }
 
-    public Adicionalservido getAdicionalservido() {
-        return adicionalservido;
+    public List<Adicionalservido> getAdicionalservidoList() {
+        return adicionalservidoList;
     }
 
-    public void setAdicionalservido(Adicionalservido adicionalservido) {
-        this.adicionalservido = adicionalservido;
+    public void setAdicionalservidoList(List<Adicionalservido> adicionalservidoList) {
+        this.adicionalservidoList = adicionalservidoList;
     }
 
     @Override

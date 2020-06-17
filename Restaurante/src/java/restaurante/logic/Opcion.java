@@ -19,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -54,8 +53,8 @@ public class Opcion implements Serializable {
     @NotNull
     @Column(name = "requerida")
     private short requerida;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "opcion1")
-    private Opcionservida opcionservida;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "opcion")
+    private List<Opcionservida> opcionservidaList;
     @JoinColumn(name = "platillo", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Platillo platillo;
@@ -108,12 +107,12 @@ public class Opcion implements Serializable {
         this.requerida = requerida;
     }
 
-    public Opcionservida getOpcionservida() {
-        return opcionservida;
+    public List<Opcionservida> getOpcionservidaList() {
+        return opcionservidaList;
     }
 
-    public void setOpcionservida(Opcionservida opcionservida) {
-        this.opcionservida = opcionservida;
+    public void setOpcionservidaList(List<Opcionservida> opcionservidaList) {
+        this.opcionservidaList = opcionservidaList;
     }
 
     public Platillo getPlatillo() {

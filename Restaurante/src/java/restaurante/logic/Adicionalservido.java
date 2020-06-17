@@ -9,14 +9,14 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -30,38 +30,38 @@ public class Adicionalservido implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "Adicional")
-    private Integer adicional;
-    @JoinColumn(name = "Adicional", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Adicional adicional1;
-    @JoinColumn(name = "opcionservida", referencedColumnName = "opcion")
+    @Column(name = "id")
+    private Integer id;
+    @JoinColumn(name = "Adicional", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Adicional adicional;
+    @JoinColumn(name = "opcionservida", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Opcionservida opcionservida;
 
     public Adicionalservido() {
     }
 
-    public Adicionalservido(Integer adicional) {
-        this.adicional = adicional;
+    public Adicionalservido(Integer id) {
+        this.id = id;
     }
 
-    public Integer getAdicional() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Adicional getAdicional() {
         return adicional;
     }
 
-    public void setAdicional(Integer adicional) {
+    public void setAdicional(Adicional adicional) {
         this.adicional = adicional;
-    }
-
-    public Adicional getAdicional1() {
-        return adicional1;
-    }
-
-    public void setAdicional1(Adicional adicional1) {
-        this.adicional1 = adicional1;
     }
 
     public Opcionservida getOpcionservida() {
@@ -75,7 +75,7 @@ public class Adicionalservido implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (adicional != null ? adicional.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -86,7 +86,7 @@ public class Adicionalservido implements Serializable {
             return false;
         }
         Adicionalservido other = (Adicionalservido) object;
-        if ((this.adicional == null && other.adicional != null) || (this.adicional != null && !this.adicional.equals(other.adicional))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -94,7 +94,7 @@ public class Adicionalservido implements Serializable {
 
     @Override
     public String toString() {
-        return "restaurante.logic.Adicionalservido[ adicional=" + adicional + " ]";
+        return "restaurante.logic.Adicionalservido[ id=" + id + " ]";
     }
     
 }

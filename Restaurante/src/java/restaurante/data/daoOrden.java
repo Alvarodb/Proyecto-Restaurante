@@ -46,9 +46,9 @@ public class daoOrden {
         int generatedKey = 0;
         try {
            
-            String sql = "insert into orden(tipo,fechahora,estado,metodo_pago,total,direccion,usuario) "
-                    + "values('%s','%s','%s','%s','%s','%s','%s')";
-            sql = String.format(sql, d.getTipo(), d.getFechahora(), d.getEstado(), d.getMetodoPago(), d.getTotal(), d.getDireccion(),d.getUsuario().getNombreUsuario());
+            String sql = "insert into orden(tipo,fechahora,estado,metodo_pago,total,direccion,envio,usuario) "
+                    + "values('%s','%s','%s','%s','%s','%s','%s','%s')";
+            sql = String.format(sql, d.getTipo(), d.getFechahora(), d.getEstado(), d.getMetodoPago(), d.getTotal(), d.getDireccion(),d.getEnvio(),d.getUsuario().getNombreUsuario());
 
             PreparedStatement stmt = db.cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.executeUpdate();

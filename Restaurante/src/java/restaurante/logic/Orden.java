@@ -62,6 +62,9 @@ public class Orden implements Serializable {
     @Size(max = 45)
     @Column(name = "direccion")
     private String direccion;
+    @Size(max = 45)
+    @Column(name = "envio")
+    private String envio;
     @JoinColumn(name = "usuario", referencedColumnName = "nombre_usuario")
     @ManyToOne
     private Usuario usuario;
@@ -137,6 +140,14 @@ public class Orden implements Serializable {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public String getEnvio() {
+        return envio;
+    }
+
+    public void setEnvio(String envio) {
+        this.envio = envio;
     }
 
     public Usuario getUsuario() {

@@ -11,15 +11,15 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -33,32 +33,32 @@ public class Opcionservida implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "opcion")
-    private Integer opcion;
+    @Column(name = "id")
+    private Integer id;
     @JoinColumn(name = "detalle", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Detalle detalle;
-    @JoinColumn(name = "opcion", referencedColumnName = "id", insertable = false, updatable = false)
-    @OneToOne(optional = false)
-    private Opcion opcion1;
+    @JoinColumn(name = "opcion", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Opcion opcion;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "opcionservida")
     private List<Adicionalservido> adicionalservidoList;
 
     public Opcionservida() {
     }
 
-    public Opcionservida(Integer opcion) {
-        this.opcion = opcion;
+    public Opcionservida(Integer id) {
+        this.id = id;
     }
 
-    public Integer getOpcion() {
-        return opcion;
+    public Integer getId() {
+        return id;
     }
 
-    public void setOpcion(Integer opcion) {
-        this.opcion = opcion;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Detalle getDetalle() {
@@ -69,12 +69,12 @@ public class Opcionservida implements Serializable {
         this.detalle = detalle;
     }
 
-    public Opcion getOpcion1() {
-        return opcion1;
+    public Opcion getOpcion() {
+        return opcion;
     }
 
-    public void setOpcion1(Opcion opcion1) {
-        this.opcion1 = opcion1;
+    public void setOpcion(Opcion opcion) {
+        this.opcion = opcion;
     }
 
     public List<Adicionalservido> getAdicionalservidoList() {
@@ -88,7 +88,7 @@ public class Opcionservida implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (opcion != null ? opcion.hashCode() : 0);
+        hash += (id != null ? id.hashCode() : 0);
         return hash;
     }
 
@@ -99,7 +99,7 @@ public class Opcionservida implements Serializable {
             return false;
         }
         Opcionservida other = (Opcionservida) object;
-        if ((this.opcion == null && other.opcion != null) || (this.opcion != null && !this.opcion.equals(other.opcion))) {
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -107,7 +107,7 @@ public class Opcionservida implements Serializable {
 
     @Override
     public String toString() {
-        return "restaurante.logic.Opcionservida[ opcion=" + opcion + " ]";
+        return "restaurante.logic.Opcionservida[ id=" + id + " ]";
     }
     
 }
