@@ -25,12 +25,13 @@ and open the template in the editor.
                 logged();
             }
             $(loaded);
-            function ordenar() {
+            function ordenar() {        
                 orden = {
-                    tipo: 'ASAP',
-                    metodo_pago:  $("input[name='optradio']:checked"),
+                    tipo: localStorage.getItem("tipo"),
+                    metodoPago:  $("input[name='optradio']:checked").val(),
                     estado: 'Pendiente',
-                    direccion: $("#dir").val()
+                    direccion: $("#dir").val(),
+                    envio: localStorage.getItem("envio")
                 };
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/ordenar", data: JSON.stringify(orden),contentType: "application/json"})
                         .then(() => {
@@ -67,10 +68,10 @@ and open the template in the editor.
                             "<h6 class='card-subtitle mb-2 text-muted'>Select your order options:</h6>" +
                             "<form><div class='form-group'>" +
                             "<div class='radio'>" +
-                            "<label><input type='radio' name='optradio'>Cash On Delivery</label>" +
+                            "<label><input type='radio' name='optradio' value='Cash'>Cash On Delivery</label>" +
                             "</div>" +
                             "<div class='radio'>" +
-                            "<label><input type='radio' name='optradio'>Credit or debit card upon delivery</label>" +
+                            "<label><input type='radio' name='optradio' value='Credit or debit card'>Credit or debit card upon delivery</label>" +
                             "</div>" +
                             "</div>" +
                             "<div id='direcciones'>" +

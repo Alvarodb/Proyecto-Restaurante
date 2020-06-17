@@ -219,6 +219,14 @@ and open the template in the editor.
                         "<td id='edit'><input type='button' name='edit' value='Edit' data-toggle='modal' data-target='#exampleModal2'></td>");
                 tr.find("#edit").on("click", () => {
                     dirId = dir.id;
+                    
+                    $("#address12").val(dir.address1);
+                    $("#address22").val(dir.address2);
+                    $("#city2").val(dir.city);
+                    $("#state2").val(dir.state );
+                    $("#postcode2").val(dir.postcode);
+                    $("#country2").val(dir.country);
+                    
                     edit();
                 });
                 listado.append(tr);
