@@ -42,6 +42,7 @@ public class Ordenar {
     public void ordenar(Orden ord) throws Exception{ 
         int keyOrden;
         int keyDetalle;
+        int keyOpcionServida;
         
         HttpSession session = request.getSession(true);
         Date now = new Date();
@@ -60,9 +61,9 @@ public class Ordenar {
             keyDetalle = Model.instance().agregarDetalles(d);
             
             for(Opcion opc: d.getPlatillo().getOpcionList()){
-               Model.instance().agregarOpcionServida(opc.getId(),keyDetalle);
+               keyOpcionServida = Model.instance().agregarOpcionServida(opc.getId(),keyDetalle);
                for(Adicional ad: opc.getAdicionalList()){
-                   Model.instance().agregarAdicionalServido(ad.getId(),opc.getId());
+                   Model.instance().agregarAdicionalServido(ad.getId(),keyOpcionServida);
                }
             }
           

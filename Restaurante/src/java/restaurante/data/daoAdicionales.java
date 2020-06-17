@@ -23,7 +23,7 @@ public class daoAdicionales {
     public List<Adicional> adicionalesSearch(Integer id){
         List<Adicional> resultado = new ArrayList<Adicional>();
         try {
-            String sql="select a.id,a.nombre,a.precio from adicional a, opcion o where a.opcion = '%s'";
+            String sql="select a.id,a.nombre,a.precio from adicional a where a.opcion = '%s'";
             sql=String.format(sql,id);
             ResultSet rs =  db.executeQuery(sql);
             while (rs.next()) {

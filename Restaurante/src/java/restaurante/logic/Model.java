@@ -103,8 +103,8 @@ public class Model {
     
     //Agregar opciones servidas (seleccionadas para cada orden)
     
-    public void agregarOpcionServida(int opcion, int detalle) throws Exception{
-        opcionesServidas.opcionServidaAdd(opcion,detalle);
+    public int agregarOpcionServida(int opcion, int detalle) throws Exception{
+        return opcionesServidas.opcionServidaAdd(opcion,detalle);
     }
     //adicional servido
     

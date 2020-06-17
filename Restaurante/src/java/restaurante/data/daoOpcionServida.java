@@ -5,6 +5,11 @@
  */
 package restaurante.data;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 
 
 /**
@@ -19,13 +24,20 @@ public class daoOpcionServida {
         db = new RelDatabase();
     }
 
-    public void opcionServidaAdd(int opc,int det) throws Exception {
-        String sql="insert into opcionServida (opcion,detalle) "+
+    public int opcionServidaAdd(int opc,int det) throws Exception {        
+        int generatedKey = 0;
+        try {
+            String sql="insert into opcionServida (opcion,detalle) "+
                 "values('%s','%s')";
-        sql=String.format(sql,opc,det);
-        int count=db.executeUpdate(sql);
-        if (count==0){
-            throw new Exception("Opcion Servida ya existe");
+            sql = String.format(sql,opc,det);
+            PreparedStatement stmt = db.cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+        } catch (SQLException ex) {
         }
+        return generatedKey;
     }
 }

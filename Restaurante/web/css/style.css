@@ -137,7 +137,7 @@ p {
 h5, .h5 {
     font-size: 1.09375rem;
 }
-.checkbox{
+.checkbox,.radio{
     padding-left:30px;
 }
 .option{
