@@ -76,7 +76,7 @@ public class Cart {
                     d.getPlatillo().setPrecio(precioArt * d.getCantidad());
                     session.setAttribute("total", nuevoTotal - precioArt);
                 } else if (d.getPlatillo().getNombre().equals(nombre) && d.getCantidad() <= 1) {
-                    session.setAttribute("total", nuevoTotal - (d.getPlatillo().getPrecio()));
+                    session.setAttribute("total", 0.0f);
                     iterator.remove();
                 }
             }
