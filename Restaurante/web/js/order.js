@@ -1,3 +1,4 @@
+var detalles;
 function loaded() {
     categorias();
     subcategorias();
@@ -204,7 +205,8 @@ function cartItemAdd(platillo, opciones, cant) {
     detalleOrden = {platillo: platilloOrden,
         cantidad: cant
     };
-
+    detalles.push(detalleOrden);
+    localStorage.setItem("detalles",detalles);
     cart(detalleOrden);
 
     $("#" + platillo.nombre).find("#del").on("click", () => {
@@ -226,6 +228,8 @@ function renderCart() {
     $.ajax({type: "GET", url: "/Restaurante/restaurante/cart", contentType: "application/json"})
             .then((items) => {
                 totalCart();
+                detalles = items;
+                localStorage.setItem("detalles",detalles);
                 items.forEach((item) => {
                     cartItemRender(item.platillo, item.platillo.opcionList, item.cantidad);
                 });
