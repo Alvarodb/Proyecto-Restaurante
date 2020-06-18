@@ -86,7 +86,12 @@ and open the template in the editor.
                             "</div>"
                             );
                     $("#order").on("click", function () {
-                        ordenar();
+                        if(localStorage.getItem("detalles") !== null && localStorage.getItem("detalles").length > 1){
+                            ordenar();
+                        }
+                        else{
+                            alert('Su carrito de compras esta vacio. Agrege items para poder realizar una orden');
+                        }
                     });
                 }
             }
