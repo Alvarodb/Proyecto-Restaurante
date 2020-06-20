@@ -116,8 +116,7 @@ function listOpciones(opciones, platillo) {
                     html: "<label><input type='checkbox' id='" + adi.nombre + "'" + " value=''>" + adi.nombre + "   $" + adi.precio + "</label>"
                 }));
             });
-        }
-        else if (opc.tipo === 'single') {
+        } else if (opc.tipo === 'single') {
             opc.adicionalList.forEach((adi) => {
                 $('#content').append($('<div>', {
                     class: 'radio',
@@ -127,7 +126,7 @@ function listOpciones(opciones, platillo) {
         }
     });
 
-   
+
 
     $('#content').append($('<div>', {
         class: 'modal-footer',
@@ -206,7 +205,7 @@ function cartItemAdd(platillo, opciones, cant) {
         cantidad: cant
     };
     detalles.push(detalleOrden);
-    localStorage.setItem("detalles",detalles);
+    localStorage.setItem("detalles", detalles);
     cart(detalleOrden);
 
     $("#" + platillo.nombre).find("#del").on("click", () => {
@@ -229,7 +228,7 @@ function renderCart() {
             .then((items) => {
                 totalCart();
                 detalles = items;
-                localStorage.setItem("detalles",detalles);
+                localStorage.setItem("detalles", detalles);
                 items.forEach((item) => {
                     cartItemRender(item.platillo, item.platillo.opcionList, item.cantidad);
                 });
@@ -301,14 +300,20 @@ function settings(platillo) {
             });
 }
 function buscar(categoria) {
+    var result = [];
     categoria = {nombre: categoria};
     if (categoria.nombre === "ALL") {
         subcategorias();
         return;
     }
-    $.ajax({type: "POST", url: "/Restaurante/restaurante/platillos?nombre=" + categoria.nombre, contentType: "application/json"})
+    $.ajax({type: "GET", url: "/Restaurante/restaurante/platillos", contentType: "application/json"})
             .then((platillos) => {
-                listPlatillos(platillos);
+                platillos.forEach((p) => {
+                    if (p.categoria.nombre === categoria.nombre) {
+                        result.push(p);
+                    }
+                });
+                listPlatillos(result);
             },
                     (error) => {
                 alert(errorMessage(error.status));

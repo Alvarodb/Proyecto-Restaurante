@@ -32,6 +32,61 @@ public class daoOpcion {
         } catch (SQLException ex) { }
         return resultado;
     }
+      public List<Opcion> opcionesSearchId(String id) {
+        List<Opcion> resultado = new ArrayList<Opcion>();
+        try {
+            String sql = "select * from opcion o, platillo p where o.platillo = p.id and p.id = '%s'";
+            sql = String.format(sql, id);
+            ResultSet rs = db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(opcion(rs));
+            }
+        } catch (SQLException ex) {
+        }
+        return resultado;
+    }
+
+    public Opcion opcionSearchbyName(String nombre) throws Exception {
+
+        String sql = "select * from opcion where nombre = '%s'";
+        sql = String.format(sql, nombre);
+        ResultSet rs = db.executeQuery(sql);
+        if (rs.next()) {
+            return opcion(rs);
+        } else {
+            throw new Exception("Opcion no existe");
+        }
+    }
+
+    public List<Opcion> opcionesSearchAll() {
+        List<Opcion> resultado = new ArrayList<Opcion>();
+        try {
+            String sql = "select * from opcion where platillo is null";
+            sql = String.format(sql);
+            ResultSet rs = db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(opcion(rs));
+            }
+        } catch (SQLException ex) {
+        }
+        return resultado;
+    }
+    public void OpcionUpdate(Opcion c) throws Exception{
+        String sql="update opcion set nombre='%s', tipo='%s',requerida='%s',platillo='%s' where id='%s'";
+        sql=String.format(sql,c.getNombre(),c.getTipo(),c.getRequerida(),c.getPlatillo().getId(),c.getId());        
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Opcion no existe");
+        }
+    }
+     public void OpcionDelete(Opcion p) throws Exception{
+        String sql="delete from opcion where id='%s'";
+        sql = String.format(sql,p.getId());
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("opcion no existe");
+        }
+    }
     private Opcion opcion(ResultSet rs){
         try {
             Opcion opc = new Opcion();

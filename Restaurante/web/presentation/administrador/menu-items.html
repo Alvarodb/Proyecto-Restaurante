@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Menu Items</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="/Restaurante/css/admin.css" rel="stylesheet" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>     
+        <script src="/Restaurante/js/include.js" type="text/javascript"></script>  
+    </head>
+    <body>
+        <div data-include="../administrator"></div>
+        <div id="pantalla-principal">
+            <nav class="navbar navbar-expand-lg bg-light">
+                <div class="navbar-brand"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-modal" >ADD</button> </div>
+                <div class="navbar-brand"> <button type="button" id="borrar" class="btn btn-danger">DELETE</button> </div>
+
+                <ul class="navbar-nav ml-auto" style="cursor: pointer;">
+                    <li id="storefront" class="nav-item">
+                        <p>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#searchMenu" aria-expanded="false" aria-controls="searchMenu">
+                                Search
+                            </button>
+                        </p>
+                        <div class="collapse" id="searchMenu">
+                            <div class="card card-body">
+                                <div class="form-group" style="width: 100vh">                                    
+                                    Search by: <input type="buscar" class="form-control" id="input-buscar" placeholder="Search by Name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="categorias-platillo">Categorias</label>
+                                    <select class="form-control" id="categorias-platillo-busc">
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" type="button" id="buscar" >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" style="width: 100vh">
+                    <div class="modal-content">
+                        <div class="modal-header" >
+                            <center>Platillos</center>
+                        </div>
+                        <form id="formulario">
+                            <div class="modal-body">                              
+                                <br>     
+                                <div class="form-group">
+                                    <label for="Nombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" placeholder="Nombre">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Descripcion">Descripcion</label>
+                                    <input type="text" class="form-control" id="descripcion" placeholder="Descripcion">
+                                </div>
+                                <div class="form-group">
+                                    <label for="Precio">Precio</label>
+                                    <input type="text" class="form-control" id="precio" placeholder="Precio">
+                                </div>                              
+                                <div class="form-group">
+                                    <label for="categorias-platillo">Categorias</label>
+                                    <select class="form-control" id="categorias-platillo">
+                                    </select>
+                                </div>
+                                Opcionales: 
+                                <div class="form-group" id="opciones">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <div>
+                                    <input type="button" id="agregar-menu-item" class="btn btn-primary btn-lg btn-block" value="Agregar">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <table id="tabla-menu-items" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"><input id="selectall" type="checkbox"></th>
+                        <th scope="col"> </th>
+                        <th scope="col">#ID</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Categoria</th>
+                    </tr>
+                </thead>
+                <tbody id="menu-items"></tbody>
+            </table>
+
+        </div>
+        <script>
+            $('#selectall').change(function () {
+               $('#menu-items input[type=checkbox]').prop('checked', $(this).is(':checked'));
+            });
+            
+            function loaded() {
+                cargarPlatillos();
+                categorias();
+                opciones();
+                $("#agregar-menu-item").on("click", add);
+                $("#borrar").on("click", del);
+                $("#buscar").on("click", buscar);
+            }
+            
+            loaded();
+            function cargarPlatillos() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/platillos/", contentType: "application/json"})
+                        .then((platillos) => {
+                            listPlatillos(platillos);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function edit(id) {
+                platillo = {id: id};
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/platillos/" + platillo.id, contentType: "application/json"})
+                        .then((obj) => {
+                            show(obj);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function del() {
+                platillos = [];
+               
+                $('#menu-items input[type="checkbox"]:checked').each(function () {
+                    platillo = {id: $(this).val()};
+                    platillos.push(platillo);
+                });
+               
+                $.ajax({type: "PUT", url: "/Restaurante/restaurante/platillos/", data: JSON.stringify(platillos), contentType: "application/json"})
+                        .then((platillos) => {
+                            listPlatillos(platillos);
+                    
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function buscar() {
+
+                result = [];
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/platillos/", contentType: "application/json"})
+                        .then((platillos) => {
+                            platillos.forEach((p) => {
+                                if ($("#categorias-platillo-busc").val() === '' && $("#input-buscar").val() !== '') {
+                                    platillo = {nombre: $("#input-buscar").val()};
+                                    if (p.nombre.includes(platillo.nombre)) {
+                                        result.push(p);
+                                    }
+                                } else if ($("#input-buscar").val() === '' && $("#categorias-platillo").val() !== '') {
+                                    platillo = {categoria: $("#categorias-platillo-busc").val()};
+                                    if (p.categoria.nombre.includes(platillo.categoria)) {
+                                        result.push(p);
+                                    }
+                                } else if ($("#input-buscar").val() !== '' && $("#categorias-platillo-busc").val() !== '') {
+                                    platillo = {nombre: $("#input-buscar").val(), categoria: $("#categorias-platillo").val()};
+                                    if (p.categoria.nombre.includes(platillo.categoria) && p.nombre.includes(platillo.nombre)) {
+                                        result.push(p);
+                                    }
+                                }
+
+
+                            });
+                            if ($("#input-buscar").val() === '' && $("#categorias-platillo").val() === '') {
+                                listPlatillos(platillos);
+                                return;
+                            }
+                            listPlatillos(result);
+
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function listPlatillos(platillos) {
+                var listado = $("#menu-items");
+                listado.html("");
+                platillos.forEach((p) => {
+                    row(listado, p);
+                });
+            }
+            function row(listado, platillo) {
+                var tr = $("<tr />");
+                tr.html("<td>" + "<input value='" + platillo.id + "' type='checkbox'>" + "</td>" +
+                        "<td id='edit'>" + "<img src='https://img.icons8.com/material-rounded/24/000000/pencil--v2.png'/>" + "</td>" +
+                        "<td>" + platillo.id + "</td>" +
+                        "<td>" + platillo.nombre + "</td>" +
+                        "<td>" + platillo.descripcion + "</td>" +
+                        "<td>" + platillo.precio + "</td>" +
+                        "<td>" + platillo.categoria.nombre + "</td>"
+                        );
+
+                tr.find("#edit").on("click", () => {
+                    edit(platillo.id);
+                });
+
+                listado.append(tr);
+            }
+            function categorias() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/categorias/", contentType: "application/json"})
+                        .then((categorias) => {
+                            listCategorias(categorias);
+                            listCategoriasBusc(categorias);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function opciones() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/opciones/", contentType: "application/json"})
+                        .then((opciones) => {
+                            listOpciones(opciones);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function listCategoriasBusc(categorias) {
+                var listado = $("#categorias-platillo-busc");
+                listado.html("<option id='0' />");
+                categorias.forEach((c) => {
+                    categoria(listado, c);
+                });
+            }
+            function listCategorias(categorias) {
+                var listado = $("#categorias-platillo");
+                listado.html("");
+                categorias.forEach((c) => {
+                    categoria(listado, c);
+                });
+            }
+            function categoria(listado, categoria) {
+                var option = $("<option />");
+                option.id = categoria.id;
+                option.value = categoria.nombre;
+                option.html(categoria.nombre);
+                listado.append(option);
+            }
+            function listOpciones(opciones) {
+                var listado = $("#opciones");
+                listado.html("");
+                opciones.forEach((c) => {
+                    opcion(listado, c);
+                });
+            }
+            function opcion(listado, opcion) {
+                var sb = "  <div class=\"checkbox\">" +
+                        "  <label><input type=\"checkbox\" value='" + opcion.nombre + "' id='" + opcion.nombre + "'> " + opcion.nombre + "</label>" +
+                        "  </div>";
+                listado.append(sb);
+            }
+
+            function add() {
+                
+                if (!validar())
+                    return;                
+                categoria = {nombre: $("#categorias-platillo").val()};
+                var objetos = [];
+                $('input[type="checkbox"]:checked').each(function () {
+                    objeto = {nombre: $(this).val()};
+                    objetos.push(objeto);
+                });
+                platillo = {nombre: $("#nombre").val(), descripcion: $("#descripcion").val(), precio: $("#precio").val(), opcionList: objetos, categoria: categoria};
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/platillos/",
+                    data: JSON.stringify(platillo), contentType: "application/json"})
+                        .then((platillos) => {
+                            listPlatillos(platillos);
+                            $("#formulario")[0].reset();
+                            $('#add-modal').modal('hide');
+
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+
+            }
+
+            function show(plat) {
+                $('#add-modal').modal('show');
+                $("#nombre").val(plat.nombre);
+                $("#descripcion").val(plat.descripcion);
+                $("#precio").val(plat.precio);
+                $("#categorias-platillo").val(plat.categoria.nombre);
+
+            }
+
+
+            function validar() {
+                var error = false;
+                $("#formulario input").removeClass("invalid");
+                error |= $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).length > 0;
+                $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).addClass("invalid");
+                return !error;
+            }
+
+            function errorMessage(status) {
+                switch (status) {
+                    case 404:
+                        return "Registro no encontrado";
+                    case 403:
+                    case 405:
+                        return "Usuario no autorizado";
+                    case 406:
+                        return "Registro duplicado";
+                    default:
+                        return "Error: " + status;
+                }
+            }
+        </script>
+    </body>
+</html>
+
+

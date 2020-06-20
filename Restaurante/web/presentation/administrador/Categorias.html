@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <title>Categorias</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="/Restaurante/css/admin.css" rel="stylesheet" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>     
+        <script src="/Restaurante/js/include.js" type="text/javascript"></script>  
+    </head>
+    <body>
+        <div data-include="../administrator"></div>
+        <div id="pantalla-principal">
+            <nav class="navbar navbar-expand-lg bg-light">
+                <div class="navbar-brand"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add-modal" >ADD</button> </div>
+                <div class="navbar-brand"> <button type="button" id="borrar" class="btn btn-danger">DELETE</button> </div>
+
+             
+            </nav>
+            <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" style="width: 100vh">
+                    <div class="modal-content">
+                        <div class="modal-header" >
+                            <center>Categorias</center>
+                        </div>
+                        <form id="formulario" >
+                            <div class="modal-body">                              
+                                <br>     
+                                <div class="form-group">
+                                    <label for="Nombre">Nombre</label>
+                                    <input type="text" class="form-control" id="nombre" placeholder="Nombre">
+                                </div>
+
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <div>
+                                    <input type="button" id="agregar-categoria" class="btn btn-primary btn-lg btn-block" value="Agregar">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <table id="tabla-categorias" class="table table-striped">
+                <thead>
+                    <tr>
+                      
+                        <th scope="col"><input id="selectall" type="checkbox"></th>                        
+                        <th scope="col">#ID</th>
+                        <th scope="col">Nombre</th>                       
+                    </tr>
+                </thead>
+                <tbody id="categorias"></tbody>
+            </table>
+
+        </div>
+        <script>
+              $('#selectall').change(function () {
+               $('#categorias input[type=checkbox]').prop('checked', $(this).is(':checked'));
+            });
+            function loaded() {
+                cargarCategorias();    
+                 $("#borrar").on("click", del);
+                $("#agregar-categoria").on("click", add);
+              
+            }
+            loaded();
+            function cargarCategorias() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/categorias/", contentType: "application/json"})
+                        .then((categorias) => {
+                            listCategorias(categorias);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function add() {
+
+                categoria = {nombre: $("#nombre").val()};
+                $.ajax({type: "POST", url: "/Restaurante/restaurante/categorias/",
+                    data: JSON.stringify(categoria), contentType: "application/json"})
+                        .then((categorias) => {
+                            listCategorias(categorias);
+                            $("#formulario")[0].reset();
+                            $('#add-modal').modal('hide');
+
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+
+            }
+              function del() {
+                categorias = [];
+
+                $('#tabla-categorias input[type="checkbox"]:checked').each(function () {
+                    categoria = {id: $(this).val()};
+                    categorias.push(categoria);
+                });
+
+                $.ajax({type: "PUT", url: "/Restaurante/restaurante/categorias/", data: JSON.stringify(categorias), contentType: "application/json"})
+                        .then((categorias) => {
+                            listCategorias(categorias);
+
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            } 
+            
+            function listCategorias(categorias) {
+                var listado = $("#categorias");
+                listado.html("");
+                categorias.forEach((p) => {
+                    row(listado, p);
+                });
+            }
+            function row(listado, categoria) {
+                var tr = $("<tr />");
+                tr.html("<td>" + "<input value='" + categoria.id + "' type='checkbox'>" + "</td>" +                        
+                        "<td>" + categoria.id + "</td>" +
+                        "<td>" + categoria.nombre + "</td>"
+                        );
+
+                tr.find("#edit").on("click", () => {
+                    edit(categoria.id);
+                });
+                listado.append(tr);
+            }
+            
+            function validar() {
+                var error = false;
+                $("#formulario input").removeClass("invalid");
+                error |= $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).length > 0;
+                $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).addClass("invalid");
+                return !error;
+            }
+
+            function errorMessage(status) {
+                switch (status) {
+                    case 404:
+                        return "Registro no encontrado";
+                    case 403:
+                    case 405:
+                        return "Usuario no autorizado";
+                    case 406:
+                        return "Registro duplicado";
+                    default:
+                        return "Error: " + status;
+                }
+            }
+
+        </script>
+
+    </body>
+</html>

@@ -1,0 +1,202 @@
+<html>
+    <head>
+        <title>Ordenes</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="/Restaurante/css/admin.css" rel="stylesheet" type="text/css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>     
+        <script src="/Restaurante/js/include.js" type="text/javascript"></script>  
+    </head>
+    <body>
+        <div data-include="../administrator"></div>
+        <div id="pantalla-principal">
+            <nav class="navbar navbar-expand-lg bg-light">
+
+                <ul class="navbar-nav ml-auto" style="cursor: pointer;">
+                    <li id="storefront" class="nav-item">
+                        <p>
+                            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#searchMenu" aria-expanded="false" aria-controls="searchMenu">
+                                Search
+                            </button>
+                        </p>
+                        <div class="collapse" id="searchMenu">
+                            <div class="card card-body">
+                                <div class="form-group" style="width: 100vh">                                    
+                                    Search by: <input type="buscar" class="form-control" id="input-buscar" placeholder="Search by Username">
+                                </div>     
+                                <div class="form-group">
+                                    <label for="estado">Estado</label>
+                                    <select class="form-control" id="estado-busc">
+                                        <option id="0"> </option>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En camino">En camino</option>
+                                        <option value="Entregado">Entregado</option>
+
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" type="button" id="buscar" >
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" style="width: 100vh">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <center>Facturas</center>
+                        </div>
+                        <form id="formulario" >
+                            <div class="modal-body">                              
+                                <br>     
+                                <div class="form-group">
+                                    <label for="estado">Estado</label>
+                                    <select class="form-control" id="estado-orden"> 
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En camino">En camino</option>
+                                        <option value="Entregado">Entregado</option>
+                                    </select>
+                                </div>
+                                <div id="factura">    
+
+
+                                </div>
+
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <div>
+                                    <input type="button" id="agregar-usuario" class="btn btn-primary btn-lg btn-block" value="Agregar">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <table id="tabla-ordenes" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col"><input id="selectall" type="checkbox"></th>
+                        <th scope="col"> </th>
+                        <th scope="col">ID</th>                        
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Fecha Orden</th>
+                        <th scope="col">Fecha Entrega</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Metodo de Pago</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Direccion</th>
+                        <th scope="col">Nombre de Usuario</th>
+                    </tr>
+                </thead>
+                <tbody id="ordenes"></tbody>
+            </table>
+        </div>
+        <script>
+            $('#selectall').change(function () {
+                $('#ordenes input[type=checkbox]').prop('checked', $(this).is(':checked'));
+            });
+
+            function load() {
+                cargarOrdenes();
+                $("#borrar").on("click", del);
+                $("#buscar").on("click", buscar);
+            }
+            load();
+
+            function cargarOrdenes() {
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenes/", contentType: "application/json"})
+                        .then((ordenes) => {
+                            listOrdenes(ordenes);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+
+       
+            function edit(id) {
+                orden = {id: id};
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenes/" + orden.id, contentType: "application/json"})
+                        .then((obj) => {
+                            console.log(obj);
+                            show(obj);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+
+            function listOrdenes(ordenes) {
+                var listado = $("#ordenes");
+                listado.html("");
+                ordenes.forEach((p) => {
+                    row(listado, p);
+                });
+            }
+            function row(listado, orden) {
+                var tr = $("<tr />");
+                tr.html("<td>" + "<input value='" + orden.id + "' type='checkbox'>" + "</td>" +
+                        "<td id='edit'>" + "<img src='https://img.icons8.com/material-rounded/24/000000/pencil--v2.png'/>" + "</td>" +
+                        "<td>" + orden.id + "</td>" +
+                        "<td>" + orden.tipo + "</td>" +
+                        "<td>" + orden.fechahora + "</td>" +
+                        "<td>" + orden.fechahoraentrega + "</td>" +
+                        "<td>" + orden.estado + "</td>" +
+                        "<td>" + orden.metodoPago + "</td>" +
+                        "<td>" + orden.total + "</td>" +
+                        "<td>" + orden.direccion + "</td>" +
+                        "<td>" + orden.usuario.nombreUsuario + "</td>"
+                        );
+
+                tr.find("#edit").on("click", () => {
+                    edit(orden.id);
+                });
+
+                listado.append(tr);
+            }
+
+
+            function show(orden) {
+                $('#add-modal').modal('show');
+                $("#estado-orden").val(orden.estado);
+            }
+            function validar() {
+                var error = false;
+                $("#formulario input").removeClass("invalid");
+                error |= $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).length > 0;
+                $("#formulario input[type='text']")
+                        .filter((i, e) => {
+                            return e.value == '';
+                        }).addClass("invalid");
+                return !error;
+            }
+
+            function errorMessage(status) {
+                switch (status) {
+                    case 404:
+                        return "Registro no encontrado";
+                    case 403:
+                    case 405:
+                        return "Usuario no autorizado";
+                    case 406:
+                        return "Registro duplicado";
+                    default:
+                        return "Error: " + status;
+                }
+            }
+
+
+        </script>
+
+
+    </body>
+</html>

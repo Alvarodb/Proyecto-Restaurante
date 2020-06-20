@@ -5,10 +5,14 @@
  */
 package restaurante.data;
 
+
+
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import restaurante.logic.Direccion;
 import restaurante.logic.Usuario;
 
 /**
@@ -39,13 +43,82 @@ public class daoUsuario {
         }
         return resultado;
     }
+    public Usuario usuarioSearchbyUsername(String username) throws Exception {
+        Usuario resultado = new Usuario();
+        try {
+            String sql = "select * "
+                    + "from usuario where nombre_usuario='%s'";
+            sql = String.format(sql, username);
+            ResultSet rs = db.executeQuery(sql);
+            if (rs.next()) {
+                return usuario(rs);
+            } else {
+              return null;
+            }
+        } catch (SQLException ex) {
+        }
+        return resultado;
+    }
+     public List<Usuario> staffSearch() throws Exception{
+        List<Usuario> resultado = new ArrayList<>();
+        try {
+            String sql="select * from usuario where administrador = 1";
+            sql=String.format(sql);
+            ResultSet rs =  db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(usuario(rs));
+            }
+        } catch (SQLException ex) { }
+        return resultado;
+    }
+      public List<Usuario> clientSearch() throws Exception{
+        List<Usuario> resultado = new ArrayList<>();
+        try {
+            String sql="select * from usuario where administrador = 0";
+            sql=String.format(sql);
+            ResultSet rs =  db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(usuario(rs));
+            }
+        } catch (SQLException ex) { }
+        return resultado;
+    }
+        public List<Usuario> usuarioSearchAll() throws Exception{
+        List<Usuario> resultado = new ArrayList<>();
+        try {
+            String sql="select * from usuario";
+            sql=String.format(sql);
+            ResultSet rs =  db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(usuario(rs));
+            }
+        } catch (SQLException ex) { }
+        return resultado;
+    }
+     
     public void usuarioAdd(Usuario u) throws Exception {
         String sql="insert into usuario(nombre_usuario,clave,nombre,apellidos,email,administrador,telefono) "+
                 "values('%s','%s','%s','%s','%s','%s','%s')";
-        sql=String.format(sql,u.getNombreUsuario(),u.getClave(),u.getNombre(),u.getApellidos(),u.getEmail(),0,u.getTelefono());
+        sql=String.format(sql,u.getNombreUsuario(),u.getClave(),u.getNombre(),u.getApellidos(),u.getEmail(),u.getAdministrador(),u.getTelefono());
         int count=db.executeUpdate(sql);
         if (count==0){
             throw new Exception("Usuario ya existe");
+        }
+    }
+    public void usuarioUpdate(Usuario u) throws Exception{
+        String sql="update usuario set clave='%s', nombre='%s', apellidos='%s' , email='%s', administrador='%s', telefono='%s' where nombre_usuario='%s'";
+        sql=String.format(sql, u.getClave(), u.getNombre(), u.getApellidos(), u.getEmail(), u.getAdministrador(), u.getTelefono(), u.getNombreUsuario());        
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Usuario no existe");
+        }
+    }
+    public void UsuarioDelete(Usuario p) throws Exception{
+        String sql="delete from usuario where nombre_usuario='%s'";
+        sql = String.format(sql,p.getNombreUsuario());
+        int count=db.executeUpdate(sql);
+        if (count==0){
+            throw new Exception("Usuario no existe");
         }
     }
 

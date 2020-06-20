@@ -16,21 +16,29 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import restaurante.logic.Model;
-import restaurante.logic.Opcion;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
+import restaurante.logic.Orden;
 
-@Path("/opciones")
-public class Opciones {
-    @POST
+
+@Path("/ordenes")
+public class Ordenes {
+       @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Opcion> listOpcionesPlatillo(@QueryParam("nombre") String nombre) throws Exception{ 
-        return Model.instance().buscarOpcionesPlatillo(nombre);
-    } 
+    public List<Orden> list() throws Exception{ 
+        return Model.instance().buscarOrdenes();
+    }
+    
     @GET
+    @Path("{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public List<Opcion> listOpciones() throws Exception{ 
-        return Model.instance().buscarOpciones();
-    } 
+    public Orden get(@PathParam("id") String id) {
+        try {
+            Orden o = Model.instance().ordenEdit(id);
+            return o;
+        } catch (Exception ex) {
+            throw new NotFoundException(); 
+        }
+    }
 }
