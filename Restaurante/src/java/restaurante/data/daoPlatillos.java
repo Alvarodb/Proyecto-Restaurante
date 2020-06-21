@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import restaurante.logic.Model;
 import restaurante.logic.Platillo;
 
 /**
@@ -138,6 +139,7 @@ public class daoPlatillos {
             plat.setPrecio(Float.valueOf(rs.getString("precio")));
             plat.setDescripcion(rs.getString("descripcion"));
             plat.setCategoria(new restaurante.data.daoCategorias().categoriasFind(Integer.valueOf(rs.getString("categoria"))));
+            plat.setOpcionList(Model.instance().buscarOpcionesPlatilloId(plat.getNombre()));            
             //ordenes
             //adicionales
             return plat;

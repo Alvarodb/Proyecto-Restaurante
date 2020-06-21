@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Locale;
+import restaurante.logic.Detalle;
+import restaurante.logic.Model;
 import restaurante.logic.Orden;
 import restaurante.logic.Usuario;
 
@@ -96,7 +98,19 @@ public class daoOrden {
         }
         return resultado;
     }
-
+      public void ordenUpdate(Orden o) throws Exception {
+          
+        String sql = "update orden set fechahoraentrega='%s', estado='%s' where id='%s'" ;   
+        java.sql.Date fechahoraentrega= new java.sql.Date(o.getFechahoraentrega().getTime());
+        sql = String.format(sql, fechahoraentrega ,o.getEstado(),o.getId());
+        int count = db.executeUpdate(sql);
+        
+        if (count == 0) {
+            String sql1 = "update orden set estado='%s' where id='%s'" ;    
+            sql1 = String.format(sql1 ,o.getEstado(),o.getId());
+            int count1 = db.executeUpdate(sql);
+        }
+    }
     private Orden orden(ResultSet rs) throws Exception{
         try {
             Orden ord = new Orden();
@@ -108,7 +122,7 @@ public class daoOrden {
             ord.setMetodoPago(rs.getString("metodo_pago"));
             ord.setUsuario(new Usuario(rs.getString("usuario")));
             
- 
+            
             DateFormat format= new SimpleDateFormat("yyyy-MM-dd HH:mm");            
             java.util.Date fechahora= format.parse(rs.getString("fechahora"));          
             ord.setFechahora(fechahora);
@@ -118,7 +132,8 @@ public class daoOrden {
             ord.setFechahoraentrega(fechahoraentrega);
             }
             catch(Exception x){}
-            
+            List<Detalle> detalles=Model.instance().buscarDetalleporOrden(ord.getId());
+            ord.setDetalleList(detalles);
             return ord;
         } catch (SQLException ex) {
             return null;

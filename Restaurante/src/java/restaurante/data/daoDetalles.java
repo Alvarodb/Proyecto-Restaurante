@@ -9,7 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import restaurante.logic.Detalle;
+import restaurante.logic.Model;
+
 
 /**
  *
@@ -39,4 +43,29 @@ public class daoDetalles {
         }
         return generatedKey;
     }
+     public List<Detalle> detallesSearch(int id) throws Exception{
+        List<Detalle> resultado = new ArrayList<>();
+        try {
+            String sql="select * from detalle where orden = '%s'";
+            sql=String.format(sql,id);
+            ResultSet rs =  db.executeQuery(sql);
+            while (rs.next()) {
+                resultado.add(detalle(rs));
+            }
+        } catch (SQLException ex) { }
+        return resultado;
+    }
+     private Detalle detalle(ResultSet rs) throws Exception {
+        try {
+            Detalle d = new Detalle();
+            d.setId(Integer.valueOf(rs.getString("id")));
+            d.setCantidad(Integer.valueOf(rs.getString("cantidad")));          
+            d.setPlatillo(Model.instance().buscarPlatiiloId(rs.getString("Platillo")));
+                       
+            return d;            
+        } catch (SQLException ex) {
+            return null;
+        }
+    }
+    
 }

@@ -41,4 +41,19 @@ public class Ordenes {
             throw new NotFoundException(); 
         }
     }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Orden> actualizar(Orden o){
+        try{
+        
+            Model.instance().ActualizarOrden(o);
+            return Model.instance().buscarOrdenes();
+        }catch (Exception ex){
+            throw new NotFoundException(); 
+        }
+         
+        
+    }
 }

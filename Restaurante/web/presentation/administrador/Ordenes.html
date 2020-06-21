@@ -65,11 +65,13 @@
 
 
                                 </div>
-
+                                 
                             </div>
                             <div class="modal-footer d-flex justify-content-center">
                                 <div>
-                                    <input type="button" id="agregar-usuario" class="btn btn-primary btn-lg btn-block" value="Agregar">
+                                     <button class="btn btn-primary" type="button" id="actualizar" >
+                                       Actualizar
+                                  </button>
                                 </div>
                             </div>
                         </form>
@@ -103,11 +105,23 @@
             });
 
             function load() {
-                cargarOrdenes();
-                $("#borrar").on("click", del);
+                cargarOrdenes();               
                 $("#buscar").on("click", buscar);
+                $("#actualizar").on("click", actualizar);
             }
             load();
+            
+            function cargarFactura(o){
+                $("#factura").html("");
+            o.detalleList.forEach((d) => {
+                    $("#factura").append(d.platillo.nombre +":&nbsp x ------------------------------------"+d.cantidad+"---------------"+d.platillo.precio+"<br><br>");
+                    d.platillo.opcionList.forEach((opcion)=>{
+                         $("#factura").append(opcion.nombre+"<br>");
+                    });
+                });                   
+                 $("#factura").append("\n\nTotal: "+ o.total+ "<br>");
+            }
+            
 
             function cargarOrdenes() {
                 $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenes/", contentType: "application/json"})
@@ -119,19 +133,71 @@
                         });
             }
 
-       
+            var editar;
             function edit(id) {
                 orden = {id: id};
                 $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenes/" + orden.id, contentType: "application/json"})
-                        .then((obj) => {
-                            console.log(obj);
+                        .then((obj) => {                           
                             show(obj);
+                            editar=obj;
+                           
                         },
                                 (error) => {
                             alert(errorMessage(error.status));
                         });
             }
+             function buscar() {
 
+                result = [];
+                $.ajax({type: "GET", url: "/Restaurante/restaurante/ordenes/", contentType: "application/json"})
+                        .then((ordenes) => {
+                            ordenes.forEach((o) => {
+                                if ($("#estado-busc").val() === '' && $("#input-buscar").val() !== '') {
+                                    orden = {nombre: $("#input-buscar").val()};
+                                    if (o.usuario.nombreUsuario.includes(orden.nombre)) {
+                                        result.push(o);
+                                    }
+                                } else if ($("#input-buscar").val() === '' && $("#estado-busc").val() !== '') {
+                                    orden = {estado: $("#estado-busc").val()};
+                                    if (o.estado.includes(orden.estado)) {
+                                        result.push(o);
+                                    }
+                                } else if ($("#input-buscar").val() !== '' && $("#estado-busc").val() !== '') {
+                                    orden = {nombre: $("#input-buscar").val(), estado: $("#estado-busc").val()};
+                                    if (o.estado.includes(orden.estado) &&o.usuario.nombreUsuario.includes(orden.nombre)) {
+                                        result.push(o);
+                                    }
+                                }
+
+
+                            });
+                            if ($("#input-buscar").val() === '' && $("#categorias-platillo").val() === '') {
+                                listOrdenea(ordenes);
+                                return;
+                            }
+                            listOrdenes(result);
+
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
+            function actualizar(){
+                  editar.estado=$("#estado-orden").val();
+                  if(editar.estado==="Entregado"){
+                      var hoy=new Date();
+                     
+                      editar.fechahoraentrega=hoy;
+                  }
+                  console.log(editar);
+                  $.ajax({type: "PUT", url: "/Restaurante/restaurante/ordenes/" ,data: JSON.stringify(editar), contentType: "application/json"})
+                        .then((ordenes) => {                           
+                            listOrdenes(ordenes);
+                        },
+                                (error) => {
+                            alert(errorMessage(error.status));
+                        });
+            }
             function listOrdenes(ordenes) {
                 var listado = $("#ordenes");
                 listado.html("");
@@ -164,7 +230,8 @@
 
             function show(orden) {
                 $('#add-modal').modal('show');
-                $("#estado-orden").val(orden.estado);
+                $("#estado-orden").val(orden.estado); 
+                cargarFactura(orden);
             }
             function validar() {
                 var error = false;

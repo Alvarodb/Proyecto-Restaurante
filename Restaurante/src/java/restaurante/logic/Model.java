@@ -177,6 +177,9 @@ public class Model {
         Platillo result = platillos.platillosSearchbyName(nombre);
         return result;
     }
+    public Platillo buscarPlatiiloId(String id) throws Exception{
+        return platillos.platilloGet(id);
+    }
 
     public void platilloDelete(Platillo p) throws Exception {
         platillos.PlatilloDelete(p);
@@ -238,9 +241,18 @@ public class Model {
     public List<Orden> buscarOrdenes() throws Exception {
         return ordenes.ordenes();
     }
-
+     public Orden buscarOrdenId(String id) throws Exception {
+        return ordenes.searchOrdenbyId(id);
+    }
     public Orden ordenEdit(String id) throws Exception {
         return ordenes.searchOrdenbyId(id);
+    }
+    public void ActualizarOrden(Orden o) throws Exception{
+        ordenes.ordenUpdate(o);
+    }
+    
+    public List<Detalle> buscarDetalleporOrden(int id) throws Exception{
+        return detalles.detallesSearch(id);
     }
 
     static Model the_instance;
