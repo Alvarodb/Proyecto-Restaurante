@@ -70,8 +70,13 @@ and open the template in the editor.
                     clave: $("#inputPassword").val()
                 };
                 $.ajax({type: "POST", url: "/Restaurante/restaurante/login/", data: JSON.stringify(usuario), contentType: "application/json"})
-                        .then(() => {
-                            window.location.replace("/Restaurante/presentation/cliente/View.html");
+                        .then((user) => {
+                            if(user.administrador === 0){
+                                window.location.replace("/Restaurante/presentation/cliente/View.html");
+                            }
+                            else{
+                                window.location.replace("/Restaurante/presentation/administrator.html");
+                            }
                         },
                                 () => {
                             $('#alert').show();

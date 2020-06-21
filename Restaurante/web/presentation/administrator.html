@@ -5,68 +5,93 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 
-        <title>Admin</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
-        <link href="/Restaurante/css/admin.css" rel="stylesheet" type="text/css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
-   
-        <nav class="navbar navbar-expand-lg bg-light">
-            <div class="navbar-brand"><img src="https://img.icons8.com/ios/50/000000/restaurant-pickup.png"/><p id="page-title"></p></div>
+<title>Admin</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" crossorigin="anonymous">
+<link href="/Restaurante/css/admin.css" rel="stylesheet" type="text/css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>      
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
-            <ul class="navbar-nav ml-auto" style="cursor: pointer;">
-                <li id="storefront" class="nav-item">
-                    <a class="nav-link active" href="#"><img src="https://img.icons8.com/material-rounded/24/000000/small-business.png"/></a>
-                </li>
-                <li id="notifications" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/material/24/000000/bell.png"/></a>
-                    <div class="dropdown-menu dropdown-menu-right">
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="navbar-brand"><img src="https://img.icons8.com/ios/50/000000/restaurant-pickup.png"/><p id="page-title"></p></div>
 
-                    </div> 
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/material-two-tone/24/000000/user-male-circle.png"/></a>
-                    <div class="dropdown-menu dropdown-menu-right">
+    <ul class="navbar-nav ml-auto" style="cursor: pointer;">
+        <li id="storefront" class="nav-item">
+            <a class="nav-link active" href="/Restaurante/presentation/index.html"><img src="https://img.icons8.com/material-rounded/24/000000/small-business.png"/></a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><img src="https://img.icons8.com/material-two-tone/24/000000/user-male-circle.png"/></a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" id="logout">Logout</a>
+            </div>                   
+        </li>
+    </ul>
+</nav>
+<div id="menu-admin" class="menu-admin">
+    <ul class="nav flex-column">
+        <li class="nav-link">
+            <a class ="letter-menu" data-toggle="collapse" href="#collapse1" >DashBoard</a>
 
-                    </div>             
-                </li>
-            </ul>
-        </nav>
-        <div id="menu-admin" class="menu-admin">
-            <ul class="nav flex-column">
-                <li class="nav-link">
-                    <a class ="letter-menu" data-toggle="collapse" href="#collapse1" >DashBoard</a>
+        </li>
 
-                </li>
-              
-                <li class="nav-link">
-                    <a class ="letter-menu" data-toggle="collapse" href="#collapse4" >Kitchen</a>
-                    <div id="collapse4" class="panel-collapse collapse" >
-                        <ul class="list-group">
-                            <li id="op-menu-items" class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/menu-items.html';">Menu Items</li>
-                            <li id="op_categories" class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/Categorias.html';">Categories</li>                         
-                        </ul>                        
-                    </div>
-                </li>
-                <li class="nav-link">
-                    <a class ="letter-menu" data-toggle="collapse" href="#collapse5" >Sales</a>
-                    <div id="collapse5" class="panel-collapse collapse" >
-                        <ul class="list-group">
-                            <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/Ordenes.html';">Orders</li>                          
-                        </ul>                        
-                    </div>
-                </li>
-                
-                <li class="nav-link">
-                    <a class ="letter-menu" data-toggle="collapse" href="#collapse7" >Users</a>
-                    <div id="collapse7" class="panel-collapse collapse" >
-                        <ul class="list-group">
-                            <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/clients.html';">Customers</li>
-                            <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/staff.html';">Staff</li>
-                        </ul>                        
-                    </div>
-                </li>
-                             
-            </ul>
-        </div> 
+        <li class="nav-link">
+            <a class ="letter-menu" data-toggle="collapse" href="#collapse4" >Kitchen</a>
+            <div id="collapse4" class="panel-collapse collapse" >
+                <ul class="list-group">
+                    <li id="op-menu-items" class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/menu-items.html';">Menu Items</li>
+                    <li id="op_categories" class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/Categorias.html';">Categories</li>                         
+                </ul>                        
+            </div>
+        </li>
+        <li class="nav-link">
+            <a class ="letter-menu" data-toggle="collapse" href="#collapse5" >Sales</a>
+            <div id="collapse5" class="panel-collapse collapse" >
+                <ul class="list-group">
+                    <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/Ordenes.html';">Orders</li>                          
+                </ul>                        
+            </div>
+        </li>
+
+        <li class="nav-link">
+            <a class ="letter-menu" data-toggle="collapse" href="#collapse7" >Users</a>
+            <div id="collapse7" class="panel-collapse collapse" >
+                <ul class="list-group">
+                    <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/clients.html';">Customers</li>
+                    <li class="nav-link" onclick="location.href = '/Restaurante/presentation/administrador/staff.html';">Staff</li>
+                </ul>                        
+            </div>
+        </li>
+
+    </ul>
+</div> 
+
+<script>
+    function loaded() {
+        $("#logout").on("click",function(){logout();});
+    }
+    $(loaded);
+
+    function logout(){
+         $.ajax({type: "DELETE", url: "/Restaurante/restaurante/login/", contentType: "application/json"})
+                .then(() => {
+                    window.location.replace("/Restaurante/presentation/index.html");
+                },
+                        (error) => {
+                    alert(errorMessage(error.status));
+                });
+    }
+    function errorMessage(status) {
+        switch (status) {
+            case 404:
+                return "Registro no encontrado";
+            case 403:
+            case 405:
+                return "Usuario no autorizado";
+            case 406:
+                return "Registro duplicado";
+            default:
+                return "Error: " + status;
+        }
+    }
+
+</script>

@@ -5,7 +5,7 @@
             <img src="/Restaurante/images/logo.svg">
             <ul class="navbar-nav ml-auto" id="options" style="cursor: pointer;">                  
                 <li id="menu" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/View.html';">View Menu</li>               
-                <li id="admin" class="nav-link"onclick="location.href = '/Restaurante/presentation/administrator.html';">Administrador</li>
+                <li id="admin" class="nav-link" onclick="location.href = '/Restaurante/presentation/cliente/login.html';">Administrador</li>
             </ul>
         </div>
     </nav>
@@ -48,7 +48,6 @@
             $("#options").append("<li id='logout' class='nav-link'>Logout</li>");
             $("#logout").on('click',function(){logout();});
         }
-        
     }
     function errorMessage(status) {
         switch (status) {
